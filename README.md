@@ -5,6 +5,10 @@ We have mechanized and proved all claims made in the paper in Coq.
 
 This development is also available via a virtual machine. (Downloadable in Zenodo)
 
+### Documentation
+
+The documentation for this library is available [here](http://euisuny.github.io/icfp22-layered-monadic-interpreters/), which includes the correspondence between statements in the paper and the source code.
+
 ### Dependencies
 
 The following are necessary dependencies for the code base.
@@ -28,7 +32,3 @@ The project can be built by running `make` in this directory.
   cd src; make coq
 ```
 In order to build the case study, run `make` in each of the subdirectories, 
-
-### Coq Documentation
-
-The coq documentation (which includes the correspondence between statements in the paper and the source code) can be found in `html/index.html`.
