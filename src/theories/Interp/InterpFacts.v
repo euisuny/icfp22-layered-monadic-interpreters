@@ -153,7 +153,7 @@ Proof.
       eapply eqmR_ret; eauto; typeclasses eauto.
 Qed.
 
-Section InterpItree.
+Section InterpITree.
 
   (** Unfolding of [interp]. *)
   Definition _interp {E F R} (f : E ~> itree F) (ot : itreeF E R _)
@@ -273,7 +273,7 @@ Section InterpItree.
 
   #[global] Instance itree_MonadMorphism :
     forall (E F : Type -> Type) (f : E ~> itree F),
-      MonadMorphism (itree_interp f).
+      MonadMorphism _ _ (itree_interp f).
   Proof.
     constructor; [constructor; try typeclasses eauto |..]; try typeclasses eauto.
     repeat intro; eapply eutt_interp'; repeat intro; eauto.
