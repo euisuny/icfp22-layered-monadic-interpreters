@@ -1,0 +1,344 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <title>Layered Monadic Interpreters README</title>
+    <style type="text/css">
+        .tg  {border-collapse:collapse;border-spacing:0;border-color:#ccc;}
+        .tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#fff;border-top-width:1px;border-bottom-width:1px;}
+        .tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:0px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#f0f0f0;border-top-width:1px;border-bottom-width:1px;}
+        .tg .tg-bq60{font-weight:bold;font-size:100%;font-family:Arial, Helvetica, sans-serif !important;;vertical-align:top}
+        .tg .tg-rkwu{font-family:"Courier New", Courier, monospace !important;;vertical-align:top}
+        .tg .tg-8fc1{font-weight:bold;font-family:Arial, Helvetica, sans-serif !important;;vertical-align:top}
+        .tg .tg-yw4l{vertical-align:top}
+    </style>
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<link href="coqdocjs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="config.js"></script>
+<script type="text/javascript" src="coqdocjs.js"></script>
+</head>
+
+<body onload="document.getElementById('content').focus()">
+  <div id="header">
+    <span class="left">
+      <span class="modulename"> <script> document.write(document.title) </script> </span>
+    </span>
+
+    <span class="button" id="toggle-proofs"></span>
+
+    <span class="right">
+      <a href="../">Project Page</a>
+      <a href="./indexpage.html"> Index </a>
+      <a href="./toc.html"> Table of Contents </a>
+    </span>
+</div>
+    <div id="content" tabindex="-1" onblur="document.getElementById('content').focus()">
+        <div id="main">
+
+            <h1>Formal Reasoning About Layered Monadic Interpreters</h1>
+            Our paper extends the Coq <a href="https://github.com/DeepSpec/InteractionTrees">Interaction Trees library</a>
+            to support elegant reasoning about layered monadic interpreters.
+            This artifact contains the corresponding formalism, and the case study of an Imp2Asm compiler.
+
+            <h1>Documentation</h1>
+            This documentation includes pretty-printed Coq source, which can also be found as <code>.v</code> files
+            in the git repository. The pretty-printed html hides proof scripts by default, so you can click on <code>Show Proofs</code>
+            at the top of the page to display all proofs.
+
+            <h3>Proof Structure</h3>
+
+            This artifact builds on top of the Interaction Tree library, and this artifact includes the original ITree library along with the relevant extension
+            which is the contribution of the paper.
+
+            The Coq contribution of this artifact is outlined in these following files.
+            N.B. There are other files included in the table of contents and the artifact submission which are part of the original ITree library.
+
+            <h5> Basics </h5>
+            <ul>
+                <li><a href="ITree.Basics.HeterogeneousRelations.html">HeterogeneousRelations.v</a>:
+                    Helper and utility lemmas for heterogeneous relations.
+                </li>
+                <li><a href="ITree.Basics.MonadState.html">MonadState.v</a>:
+                    Proves iterative laws for state monad.
+                </li>
+                <li><a href="ITree.Basics.MonadFail.html">MonadFail.v</a>:
+                    Proves iterative laws for error monad.
+                </li>
+            </ul>
+            <h5> Core </h5>
+            <ul>
+                <li><a href="ITree.Core.Subevent.html">Subevent.v</a>:
+                    Defines extensible subevents with automatic injection.
+                </li>
+            </ul>
+            <h5> Interp </h5>
+            <ul>
+                <li><a href="ITree.Interp.HFunctor.html">HFunctor.v</a>:
+                    Defines higher-order functors and laws.
+                </li>
+                <li><a href="ITree.Interp.Interp.html">Interp.v</a>:
+                    Defines interpretations of iterative monads.
+                </li>
+                <li><a href="ITree.Interp.InterpFacts.html">InterpFacts.v</a>:
+                    Defines interpretation laws.
+                </li>
+            </ul>
+            <h5> EqmR </h5>
+            <ul>
+                <li><a href="ITree.EqmR.EqmRMonad.html">EqmRMonad.v</a>:
+                    Defines eqmR well-formedness laws, eqmR monad laws and inversion laws.
+                </li>
+                <li><a href="ITree.EqmR.EqmRMonadH.html">EqmRMonadH.v</a>:
+                    Defines eqmR relations over different monads.
+                </li>
+                <li><a href="ITree.EqmR.EqmRMonadT.html">EqmRMonadT.v</a>:
+                    Defines lifting of eqmR relations over monad transformers.
+                </li>
+                <li><a href="ITree.EqmR.Monads.ITree_strong.html">ITree_strong.v</a>:
+                    Proves eqmR-related laws for interaction trees with strong bisimulation.
+                </li>
+                <li><a href="ITree.EqmR.Monads.ITree_weak.html">ITree_weak.v</a>:
+                    Proves eqmR-related laws for interaction trees with weak bisimulation.
+                </li>
+                <li><a href="ITree.EqmR.Monads.State.html">State.v</a>:
+                    Proves eqmR-related laws for state monad.
+                </li>
+                <li><a href="ITree.EqmR.Monads.Prop.html">Prop.v</a>:
+                    Proves eqmR-related laws for prop monad.
+                </li>
+                <li><a href="ITree.EqmR.Monads.StateT.html">StateT.v</a>:
+                    Proves eqmR-related laws for state monad transformer.
+                </li>
+                <li><a href="ITree.EqmR.Monads.Error.html">Error.v</a>:
+                    Proves eqmR-related laws for error monad.
+                </li>
+                <li><a href="ITree.EqmR.Monads.ErrorT.html">ErrorT.v</a>:
+                    Proves eqmR-related laws for error monad transformer.
+                </li>
+                <li><a href="ITree.EqmR.Monads.ID.html">ID.v</a>:
+                    Proves eqmR-related laws for identity monad.
+                </li>
+            </ul>
+
+            <h3>Paper Correspondence</h3>
+
+            Below is a table that shows how the definition of laws and their instances correspond to the Coq mechanization.
+            <table class="tg">
+            <tr>
+                <th class="tg-bq60" colspan="3">Paper<br></th>
+                <th class="tg-8fc1" colspan="2">Coq Proof<br></th>
+            </tr>
+            <tr>
+                <td class="tg-8fc1">Item</td>
+                <td class="tg-8fc1">Description</td>
+                <td class="tg-8fc1">Subitems</td>
+                <td class="tg-8fc1">File</td>
+                <td class="tg-8fc1">Name</td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l" rowspan="3">Section 3.1, 3.2<br></td>
+                <td class="tg-yw4l" rowspan="3">Building Layered Monadic Interpreters<br></td>
+                <td class="tg-yw4l">Trigger</td>
+                <td class="tg-yw4l" rowspan="3"><a href="ITree.Core.Subevent.html">Subevent.v</a></td>
+                <td class="tg-rkwu">Class Trigger</td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Subevent<br></td>
+                <td class="tg-rkwu">Class Subevent</td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Subevent Instances<br></td>
+                <td class="tg-rkwu">Section Subevent_Instances</td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l" rowspan="3">Section 3.4<br></td>
+                <td class="tg-yw4l" rowspan="3">Interpretable monads<br></td>
+                <td class="tg-yw4l">Interp</td>
+                <td class="tg-yw4l" rowspan="3"><a href="ITree.Interp.Interp.html">Interp.v</a></td>
+                <td class="tg-rkwu">Class Interp</td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">HFunctor<br></td>
+                <td class="tg-rkwu">Class HFunctor</td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">stack_interp<br></td>
+                <td class="tg-rkwu">Instance stack_interp</td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Figure 7<br></td>
+                <td class="tg-yw4l">Well-formedness Laws of EqmR<br></td>
+                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l"><a href="ITree.EqmR.EqmRMonad.html">EqmRMonad.v</a></td>
+                <td class="tg-rkwu">Class EqmR_OK</td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Section 4.2<br></td>
+                <td class="tg-yw4l">Image of a Monadic Computation<br></td>
+                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l"><a href="ITree.EqmR.EqmRMonad.html">EqmRMonad.v</a></td>
+                <td class="tg-rkwu">Definition image</td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Figure 8<br></td>
+                <td class="tg-yw4l">EqmRMonad Laws<br></td>
+                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l"><a href="ITree.EqmR.EqmRMonad.html">EqmRMonad.v</a></td>
+                <td class="tg-rkwu">Class EqmRMonadLaws</td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Figure 9<br></td>
+                <td class="tg-yw4l">EqmRMonadInverses Laws<br></td>
+                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l"><a href="ITree.EqmR.EqmRMonad.html">EqmRMonad.v</a></td>
+                <td class="tg-rkwu">Class EqmRMonadInversionProperties</td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Section 4.1-4.3<br></td>
+                <td class="tg-yw4l">ID Monad Instance for EqmR<br></td>
+                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l"><a href="ITree.EqmR.Monads.ID.html">ID.v</a></td>
+                <td class="tg-rkwu"></td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Section 4.1-4.3<br></td>
+                <td class="tg-yw4l">State Monad Instance for EqmR Laws<br></td>
+                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l"><a href="ITree.EqmR.Monads.State.html">State.v</a></td>
+                <td class="tg-rkwu"></td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Section 4.1-4.3<br></td>
+                <td class="tg-yw4l">State Monad Instance for EqmR Laws<br></td>
+                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l"><a href="ITree.EqmR.Monads.State.html">State.v</a></td>
+                <td class="tg-rkwu"></td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Section 4.1-4.3<br></td>
+                <td class="tg-yw4l">Error Monad Instance for EqmR Laws<br></td>
+                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l"><a href="ITree.EqmR.Monads.Error.html">Error.v</a></td>
+                <td class="tg-rkwu"></td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Section 4.1-4.3<br></td>
+                <td class="tg-yw4l">ITree Monad Instance for EqmR Laws (strong bisimulation)<br></td>
+                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l"><a href="ITree.EqmR.Monads.ITree_strong.html">ITree_strong.v</a></td>
+                <td class="tg-rkwu"></td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Section 4.1-4.3<br></td>
+                <td class="tg-yw4l">ITree Monad Instance for EqmR Laws (weak bisimulation)<br></td>
+                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l"><a href="ITree.EqmR.Monads.ITree_weak.html">ITree_weak.v</a></td>
+                <td class="tg-rkwu"></td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Section 4.1-4.3<br></td>
+                <td class="tg-yw4l">Prop Monad Instance for EqmR Laws<br></td>
+                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l"><a href="ITree.EqmR.Monads.Prop.html">Prop.v</a></td>
+                <td class="tg-rkwu"></td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Figure 10<br></td>
+                <td class="tg-yw4l">Monad morphism laws<br></td>
+                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l"><a href="ITree.EqmR.EqmRMonadT.html">EqmRMonadT.v</a></td>
+                <td class="tg-rkwu">Section MonadMorphism</td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Figure 11<br></td>
+                <td class="tg-yw4l">Monad transformer well-formedness conditions<br></td>
+                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l"><a href="ITree.EqmR.EqmRMonadT.html">EqmRMonadT.v</a></td>
+                <td class="tg-rkwu">Class MonadTLaws</td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Section 4.4<br></td>
+                <td class="tg-yw4l">StateT Monad Transformer Law Instance<br></td>
+                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l"><a href="ITree.EqmR.Monads.StateT.html">StateT.v</a></td>
+                <td class="tg-rkwu"></td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Section 4.4<br></td>
+                <td class="tg-yw4l">ErrorT Monad Transformer Law Instance<br></td>
+                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l"><a href="ITree.EqmR.Monads.ErrorT.html">ErrorT.v</a></td>
+                <td class="tg-rkwu"></td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Section 4.5<br></td>
+                <td class="tg-yw4l">Relating Computation across Distinct Monads<br></td>
+                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l"><a href="ITree.EqmR.EqmRMonadH.html">EqmRMonadH.v</a></td>
+                <td class="tg-rkwu"></td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Figure 12<br></td>
+                <td class="tg-yw4l">Interpretation laws<br></td>
+                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l"><a href="ITree.Interp.InterpFacts.html">InterpFacts.v</a></td>
+                <td class="tg-rkwu"></td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">Figure 13<br></td>
+                <td class="tg-yw4l">Higher-order functor laws<br></td>
+                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l"><a href="ITree.Interp.HFunctor.html">HFunctor.v</a></td>
+                <td class="tg-rkwu"></td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l" rowspan="5">Figure 14<br></td>
+                <td class="tg-yw4l" rowspan="5">Composable Structures and Laws<br></td>
+                <td class="tg-yw4l">MonadT Laws</td>
+                <td class="tg-yw4l" rowspan="3"><a href="ITree.EqmR.EqmRMonadT.html">EqmRMonadT.v</a></td>
+                <td class="tg-rkwu">compose_MonadT</td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">IterativeMonadT<br></td>
+                <td class="tg-rkwu">compose_IterativeMonadT</td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">IterativeMonadT Laws<br></td>
+                <td class="tg-rkwu">compose_WF_IterativeMonadT</td>
+            </tr>
+            <tr>
+                <td class="tg-yw4l">HFunctor<br></td>
+                <td class="tg-yw4l" rowspan="2"><a href="ITree.Interp.HFunctor.html">HFunctor.v</a></td>
+                <td class="tg-rkwu">compose_HFunctor</td>/
+            </tr>
+            <tr>
+                <td class="tg-yw4l">HFunctor Laws<br></td>
+                <td class="tg-rkwu">compose_WF_HFunctor</td>
+            </tr>
+            </table>
+
+            <h3>Case Study</h3>
+
+            The case study in Section 6 is in tutorial/, where the definition of languages are in Imp.v and Asm.v, and the proof
+            of correctness for the compiler is in Imp2AsmCorrectness.v. The commuted version of this proof mentioned in Section 6.2.3
+            is in tutorial_commute/. The custom tactics mentioned is in tutorial/Proofmode.v. <br/>
+
+            <h3>Typeclass dependencies</h3>
+
+            <img src="dependency.png" alt="Proof dependency structure" width="800">
+            Typeclass dependency in EqmR Framework is shown above. The red nodes are the category theory-relevant typeclasses from the Interaction Trees library (most notably the theory of iterative monads and
+            equivalence on Kleisli arrows), the yellow nodes are standard functional programming typeclasses (functor, monad, monad transformers, higher-order functors), and the green nodes
+            represent the structural properties that we have formalized in the framework. A dotted line connects an "operational" typeclass to its corresponding laws, and solid arrows represent dependencies.
+
+
+
+
+</div>
+<div id="footer">
+  Generated by <a href="http://coq.inria.fr/">coqdoc</a> and improved with <a href="https://github.com/tebbi/coqdocjs">CoqdocJS</a>
+</div>
+</div>
+</body>
+
+</html>
