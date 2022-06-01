@@ -260,7 +260,7 @@ Section Subevent_Instances.
              {Sub2WF: Subevent_wf Sub2}
       : Subevent_wf (@Subevent_forget_order _ _ _ _ _ _ Sub1 Sub2).
     Proof.
-      do 2 split.
+      split.
       - cbn.
         unfold SemiIso.
         rewrite cat_assoc, cat_case.
@@ -308,13 +308,13 @@ Section Subevent_Instances.
 
       Each subevent instance defines an isomorphism. *)
     #[local] Instance Subevent_refl_wf {A : Type -> Type} : @Subevent_wf A _ _ Subevent_refl.
-    constructor; split.
+    constructor.
     - cbv; reflexivity.
     - cbv; intros ? [? | []]; reflexivity.
     Qed.
 
     #[local] Instance Subevent_void_wf {A : Type -> Type} : @Subevent_wf _ A _ Subevent_void.
-    constructor; split.
+    constructor.
     - cbv; reflexivity.
     - cbv. intros ? [[] | ?]; reflexivity.
     Qed.
@@ -327,7 +327,7 @@ Section Subevent_Instances.
              {Sub: (A +' B) +? C -< D}
              {SubWf: Subevent_wf Sub}
       : Subevent_wf (@Subevent_to_complement _ _ _ _ _ Sub).
-    constructor; split.
+    constructor.
     - cbn.
       apply SemiIso_Cat.
       apply SubWf.
@@ -342,7 +342,7 @@ Section Subevent_Instances.
              {Sub: (A +' B +' C) +? E -< D}
              {SubWf: Subevent_wf Sub}
       : Subevent_wf (@Subevent_Assoc1 _ A B C D E Sub).
-    constructor; split.
+    constructor.
     - cbn.
       apply SemiIso_Cat.
       apply SubWf.
@@ -369,7 +369,7 @@ Section Subevent_Instances.
              {SubWf: Subevent_wf Sub}
       : Subevent_wf (@Subevent_Assoc2 _ A B C D E Sub).
     Proof.
-      constructor; split.
+      constructor.
       - cbn.
         apply SemiIso_Cat, SubWf.
         unfold SemiIso.
@@ -386,7 +386,7 @@ Section Subevent_Instances.
              {SubWf: Subevent_wf Sub}
       : Subevent_wf (@Subevent_Assoc3 _ A B C D E Sub).
     Proof.
-      constructor; split.
+      constructor.
       - cbn.
         apply SemiIso_Cat. apply SubWf.
         apply SemiIso_Bimap.
@@ -405,7 +405,7 @@ Section Subevent_Instances.
              {SubWf: Subevent_wf Sub}
       : Subevent_wf (@Subevent_Sum_In _ A B C D Sub).
     Proof.
-      constructor; split.
+      constructor.
       - cbn.
         unfold SemiIso.
         rewrite cat_case.
@@ -438,7 +438,7 @@ Section Subevent_Instances.
              {SubWf: Subevent_wf Sub}
       : Subevent_wf (@Subevent_Sum_Out _ A B C D Sub).
     Proof.
-      constructor; split.
+      constructor.
       - cbn.
         unfold SemiIso.
         rewrite cat_case.

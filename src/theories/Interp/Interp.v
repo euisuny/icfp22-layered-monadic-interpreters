@@ -1,8 +1,9 @@
-(** * Monadic interpretations of interaction trees *)
+(** * Interpretable Monads *)
 
-(** We can derive semantics for an interaction tree [itree E ~> M]
-    from semantics given for every individual event [E ~> M],
-    when [M] is a monad (actually, with some more structure).
+(** Interpretable monads encompass monads built from ITrees through
+    layers of interpretation. Essentially, they are iterative monads
+    that may trigger events. Interpretable monads interpret into
+    interpretable monads, so that they can be layered.
 
     We define the following terminology for this library.
     Other sources may have different usages for the same or related
@@ -26,8 +27,7 @@
     - "ITree event handlers" are functions [E ~> itree F].
 
     Categorically, this boils down to saying that [itree] is a free
-    monad (not quite, but close enough).
- *)
+    monad (not quite, but close enough). *)
 
 (* begin hide *)
 From ExtLib Require Import
@@ -46,6 +46,10 @@ From ITree.EqmR Require Import
      EqmRMonad EqmRMonadT.
 
 From Paco Require Import paco.
+
+Import MonadNotation.
+Local Open Scope cat_scope.
+Local Open Scope monad_scope.
 (* end hide *)
 
 (** ** Translate *)
@@ -78,25 +82,24 @@ Definition translate {E F} (h : E ~> F)
 
 Arguments translate {E F} h [T].
 
-(** ** Interpret *)
-Import MonadNotation.
-Local Open Scope cat_scope.
-Local Open Scope monad_scope.
+(** *Interpret *)
+(* Interpretation schemes can be generalized as a function from a stack of monads
+   [T] applied to a interpretable monad [IM] with an indexing [I] to a semantic
+   domain [T M].
 
-(* Interpretation schemes can be generalized as a function from a
-   stack of monads [T] applied to a interpretable monad [IM] with an
-   indexing [I] to a semantic domain [T M].
+   It takes as handler [h: I ~> M], which is informative of how the index should
+   be interpreted into the semantic domain.
 
-   It takes as handler [h: I ~> M], which is informative of how the
-   index should be interpreted into the semantic domain. *)
+   We call any such [T IM] that has an [interp] function defined over it an
+   _interpretable monad_.
+ *)
 Class Interp (IM T: (Type -> Type) -> Type -> Type) (M : Type -> Type) :=
   interp : forall (I : Type -> Type) (h: I ~> M), T (IM I) ~> T M.
 
-(* Typically, an event handler [E ~> M] defines a monad morphism
-    [itree E ~> M] for any monad [M] with a loop operator.
+(* Typically, an event handler [E ~> M] defines a monad morphism [itree E ~> M]
+  for any monad [M] with a loop operator.
 
-  This itree interpretation is an instance of the general
-  interpretation scheme.*)
+  This itree interpretation is an instance of the general interpretation scheme. *)
 Definition interp_body {E M : Type -> Type}
             {MM : Monad M} {MI : MonadIter M}
            (h : E ~> M) :
@@ -108,6 +111,7 @@ Definition interp_body {E M : Type -> Type}
     | VisF e k => bind (h _ e) (fun x => (ret (inl (k x))))
     end).
 
+(* ITrees are an interpretable monad. *)
 #[global] Instance itree_interp {M : Type -> Type}
            {MM : Monad M} {MI : MonadIter M} :
   Interp itree (fun x => x) M := fun _ h R => iter (interp_body h _).

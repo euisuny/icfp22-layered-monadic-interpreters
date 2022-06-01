@@ -90,6 +90,7 @@ End MonadMorphism.
 Arguments MorphRet _ _ {_ _ _} _.
 Arguments MorphBind _ _ {_ _ _ _} _.
 Arguments MonadMorphism _ _ {_ _ _ _} _.
+Arguments IterMorphism {_ _ _} _ {_ _}.
 Arguments morph / {_ _ _ _}.
 Arguments morph_ret {_ _ _ _ _ _ _} [_ _].
 Arguments morph_bind {_ _ _ _ _ _ _ _} [_ _ _ _].

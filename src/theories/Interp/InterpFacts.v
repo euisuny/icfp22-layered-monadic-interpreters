@@ -153,6 +153,182 @@ Proof.
       eapply eqmR_ret; eauto; typeclasses eauto.
 Qed.
 
+Section InterpItree.
+
+  (** Unfolding of [interp]. *)
+  Definition _interp {E F R} (f : E ~> itree F) (ot : itreeF E R _)
+    : itree F R :=
+    match ot with
+    | RetF r => Ret r
+    | TauF t => Tau (interp f t)
+    | VisF e k => f _ e >>= (fun x => Tau (interp f (k x)))
+    end.
+
+  (** Unfold lemma. *)
+  Lemma unfold_interp {E F R} {f : E ~> itree F} (t : itree E R) :
+    interp f t ≅ (_interp f (observe t)).
+  Proof.
+    unfold interp, Basics.iter, MonadIter_itree. setoid_rewrite unfold_iter.
+    unfold interp_body.
+    destruct (observe t); cbn; try rewrite ?Eq.bind_bind;
+      rewrite ?Eq.bind_ret_l, ?bind_map.
+    all: try solve [tau_steps; reflexivity].
+    setoid_rewrite Eq.bind_ret_l. reflexivity.
+  Qed.
+
+  #[global]
+  Instance eq_itree_interp' {E F R} (f : E ~> itree F)
+    : Proper (eq_itree eq ==> eq_itree eq) (interp f (T0 := R)).
+  Proof.
+    repeat red.
+    ginit. pcofix CIH.
+    intros l r0 Hlr.
+    rewrite 2 unfold_interp.
+    punfold Hlr; red in Hlr.
+    destruct Hlr; cbn; subst; try discriminate; pclearbot; try (gstep; constructor; eauto with paco; fail).
+    guclo eqit_clo_bind. econstructor; eauto.
+    eapply reflexivity.
+    intros; subst.
+    gstep; econstructor; eauto with paco.
+  Qed.
+
+  #[global]
+  Instance eutt_interp {E F R} (f : E ~> itree F)
+    : Proper (eutt eq ==> eutt eq) (interp f (T0 := R)).
+  Proof.
+    repeat red.
+    ginit. pcofix CIH. intros.
+
+    rewrite !unfold_interp. punfold H0. red in H0.
+    induction H0; intros; subst; pclearbot; simpl.
+    - gstep. constructor. eauto.
+    - gstep. constructor. eauto with paco.
+    - guclo eqit_clo_bind; econstructor; eauto. eapply reflexivity.
+      intros; subst.
+      gstep; constructor; eauto with paco.
+    - rewrite tau_euttge, unfold_interp. auto.
+    - rewrite tau_euttge, unfold_interp. auto.
+  Qed.
+
+  #[global]
+  Definition eutt_interp' {E F : Type -> Type} {R1 R2 : Type} (RR: R1 -> R2 -> Prop) (f : E ~> itree F) :
+    ProperH (eutt RR ~~> eutt RR) (interp f (T0 := R1)) (interp f (T0 := R2)).
+  Proof.
+    repeat red.
+    einit.
+    ecofix CIH. intros.
+    rewrite !unfold_interp.
+    punfold H0.
+    induction H0; intros; subst; pclearbot; simpl.
+    - estep.
+    - estep.
+    - ebind; econstructor.
+      + reflexivity.
+      + intros; subst. estep. ebase.
+    - rewrite tau_euttge, unfold_interp. eauto.
+    - rewrite tau_euttge, unfold_interp. eauto.
+  Qed.
+
+  #[global]
+  Instance itree_morph_ret:
+    forall (E F : Type -> Type) (f : E ~> itree F),
+      MorphRet (itree E) (itree F) (itree_interp f).
+  Proof. repeat intro. setoid_rewrite unfold_interp. cbn.
+        apply eqit_Ret; eauto. Qed.
+
+  Lemma itree_interp_tau {E F R} {f : E ~> itree F} (t: itree E R):
+    eq_itree eq (interp f (Tau t)) (Tau (interp f t)).
+  Proof. rewrite unfold_interp. reflexivity. Qed.
+
+  Lemma itree_interp_vis {E F R} {f : E ~> itree F} U (e: E U) (k: U -> itree E R) :
+    eq_itree eq (interp f (Vis e k)) (ITree.bind (f _ e) (fun x => Tau (interp f (k x)))).
+  Proof. rewrite unfold_interp. reflexivity. Qed.
+
+  Lemma itree_interp_bind {E F R S}
+        (f : E ~> itree F) (t : itree E R) (k : R -> itree E S) :
+      interp f (ITree.bind t k)
+    ≅ ITree.bind (interp f t) (fun r => interp f (k r)).
+  Proof.
+    revert R t k. ginit. pcofix CIH; intros.
+    rewrite unfold_bind, (unfold_interp t).
+    destruct (observe t); cbn.
+    - rewrite Eq.bind_ret_l. apply reflexivity.
+    - rewrite bind_tau, !itree_interp_tau.
+      gstep. econstructor. eauto with paco.
+    - rewrite itree_interp_vis, Eq.bind_bind.
+      guclo eqit_clo_bind; econstructor; try reflexivity.
+      intros; subst.
+      rewrite bind_tau. gstep; constructor; eauto with paco.
+  Qed.
+
+  #[global]
+  Instance itree_morph_bind:
+    forall (E F : Type -> Type) (f : E ~> itree F),
+      MorphBind (itree E) (itree F) (itree_interp f).
+  Proof.
+    repeat intro. setoid_rewrite itree_interp_bind.
+    eapply eutt_clo_bind. eapply eutt_interp'; eauto.
+    intros. eapply eutt_interp'; eauto. eapply H0; eauto.
+  Qed.
+
+  #[global] Instance itree_MonadMorphism :
+    forall (E F : Type -> Type) (f : E ~> itree F),
+      MonadMorphism (itree_interp f).
+  Proof.
+    constructor; [constructor; try typeclasses eauto |..]; try typeclasses eauto.
+    repeat intro; eapply eutt_interp'; repeat intro; eauto.
+  Qed.
+
+  Lemma itree_interp_iter' {E F} (f : E ~> itree F) {I A}
+        (t  : I -> itree E (I + A))
+        (t' : I -> itree F (I + A))
+        (EQ_t : forall i, eq_itree eq (interp f (t i)) (t' i))
+    : forall i,
+      interp f (ITree.iter t i)
+    ≅ ITree.iter t' i.
+  Proof.
+    ginit. pcofix CIH; intros i.
+    rewrite 2 unfold_iter.
+    rewrite itree_interp_bind.
+    guclo eqit_clo_bind; econstructor; eauto.
+    { apply EQ_t. }
+    intros [] _ []; cbn.
+    - rewrite itree_interp_tau; gstep; constructor; auto with paco.
+    - setoid_rewrite unfold_interp. cbn. gstep; constructor; auto with paco.
+  Qed.
+
+  Lemma itree_interp_iter {E F} (f : E ~> itree F) {A B}
+        (t : A -> itree E (A + B)) a0
+    : interp f (iter (C := ktree E) t a0) ≅ iter (C := ktree F) (fun a => interp f (t a)) a0.
+  Proof.
+    unfold iter, Iter_Kleisli, Basics.iter, MonadIter_itree.
+    apply itree_interp_iter'.
+    reflexivity.
+  Qed.
+
+  #[global] Instance itree_IterMorphism:
+    forall (E F : Type -> Type) (f : E ~> itree F),
+      IterMorphism (itree_interp f).
+  Proof.
+    unfold IterMorphism. cbn.
+    ginit. gcofix CIH; intros. cbn.
+    setoid_rewrite unfold_iter at 2.
+    setoid_rewrite unfold_iter at 2. cbn.
+    pose proof @itree_interp_bind. setoid_rewrite H. clear H.
+    guclo eqit_clo_bind; econstructor; eauto.
+    - apply H0; eauto.
+    - intros [|] [ |] H; cbn; subst; inv H.
+      + setoid_rewrite itree_interp_tau.
+        gstep; constructor. gfinal. left. eapply CIH; eauto.
+      + pose proof @itree_morph_ret. cbn in H. unfold MorphRet in H.
+        unfold morph in H.
+        specialize (H E F f R _ eq r1 _ eq_refl).
+        gfinal. right. cbn in H.
+        eapply paco2_mon; eauto; intros; contradiction.
+  Qed.
+
+End InterpITree.
+
 (* Facts about [interp] *)
 Section Facts.
 
