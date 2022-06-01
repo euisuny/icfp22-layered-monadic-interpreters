@@ -1,3 +1,8 @@
+(** *EqmR-related laws for the itree monad with weak bisimulation. *)
+(* This file provides the instances for eqmR-related laws for the itree monad
+ with weak bisimulation, [eutt]. *)
+
+(* begin hide *)
 From ExtLib Require Import
      Structures.Functor
      Structures.Monad.
@@ -13,7 +18,7 @@ From ITree Require Import
      Basics.Basics
      Basics.CategoryOps
      Basics.HeterogeneousRelations
-     Basics.Tacs
+     Basics.Tacs Eq Eq.Eq
      Core.ITreeDefinition
      Eq.Eq Eq.UpToTaus
      EqmR.EqmRMonad
@@ -26,71 +31,8 @@ Import RelNotations.
 Local Open Scope monad_scope.
 Local Open Scope cat_scope.
 Local Open Scope relationH_scope.
+(* end hide *)
 
-Global Instance eqitF_Proper_R {E : Type -> Type} {R1 R2:Type} :
-  Proper ((@eq_rel R1 R2) ==> eq ==> eq ==> (eq_rel ==> eq_rel) ==> eq_rel ==> eq_rel)
-    (@eqitF E R1 R2).
-Proof.
-  repeat red.
-  intros. subst. split; unfold subrelationH; intros.
-  - induction H0; try auto.
-    econstructor. apply H. assumption.
-    econstructor. apply H3. assumption.
-    econstructor. intros. specialize (REL v). specialize (H2 x3 y3). apply H2 in H3. apply H3. assumption.
-  - induction H0; try auto.
-    econstructor. apply H. assumption.
-    econstructor. apply H3. assumption.
-    econstructor. intros. specialize (REL v). specialize (H2 x3 y3). apply H2 in H3. apply H3. assumption.
-Defined.
-
-Global Instance eqitF_Proper_R2 {E : Type -> Type} {R1 R2:Type} :
-  Proper ((@eq_rel R1 R2) ==> eq ==> eq ==> eq ==> eq ==> eq ==> eq ==> iff)
-         (@eqitF E R1 R2).
-Proof.
-  repeat red.
-  intros. subst. split; intros.
-  - induction H0; try auto.
-    econstructor. apply H. assumption.
-  - induction H0; try auto.
-    econstructor. apply H. assumption.
-Defined.
-
-Global Instance eqit_Proper_R {E : Type -> Type} {R1 R2:Type}
-  : Proper ( (@eq_rel R1 R2) ==> eq ==> eq ==> eq ==> eq ==> iff) (@eqit E R1 R2).
-Proof.
-  repeat red.
-  intros. subst.
-  split.
-  -  revert_until y1. pcofix CIH. intros.
-     pstep. punfold H1. red in H1. red.
-     hinduction H1 before CIH; intros; eauto.
-     + apply EqRet. apply H. assumption.
-     + apply EqTau. right. apply CIH. pclearbot. pinversion REL.
-     + apply EqVis. intros. red. right. apply CIH.
-       specialize (REL v).
-       red in REL. pclearbot. pinversion REL.
-  -  revert_until y1. pcofix CIH. intros.
-     pstep. punfold H1. red in H1. red.
-     hinduction H1 before CIH; intros; eauto.
-     + apply EqRet. apply H. assumption.
-     + apply EqTau. right. apply CIH. pclearbot. pinversion REL.
-     + apply EqVis. intros. red. right. apply CIH.
-       specialize (REL v).
-       red in REL. pclearbot. pinversion REL.
-Defined.
-
-Global Instance eutt_Proper_R {E : Type -> Type} {R1 R2:Type}
-  : Proper ( (@eq_rel R1 R2) ==> eq ==> eq ==> iff) (@eutt E R1 R2).
-Proof.
-  unfold eutt. repeat red.
-  intros. split; intros; subst.
-  - rewrite <- H. assumption.
-  - rewrite H. assumption.
-Defined.
-
-From ITree Require Import Eq.
-
-(* Sanity check of definitions on ITree. *)
 #[global]
 Instance EqmR_ITree {E} : EqmR (itree E) := {| eqmR := (fun a b => eutt) |}.
 
@@ -403,8 +345,8 @@ Proof.
   cbn in H.
   rewrite Returns_mayRet in H0.
   induction H0.
-  + rewrite <- bind_ret_l. cbn.
-    setoid_rewrite <- bind_ret_l at 3.
+  + rewrite <- Eq.bind_ret_l. cbn.
+    setoid_rewrite <- Eq.bind_ret_l at 3.
     rewrite <- H0. apply H.
   + eapply eqit_Tau_l in H0.
     setoid_rewrite eutt_Tau in H0.
@@ -431,9 +373,9 @@ Proof.
   cbn in H.
   rewrite Returns_mayRet in H0.
   induction H0.
-  + rewrite <- bind_ret_l. cbn.
-    rewrite <- H0. rewrite H0 in H. rewrite !bind_ret_l in H.
-    rewrite H0. rewrite bind_ret_l. auto.
+  + rewrite <- Eq.bind_ret_l. cbn.
+    rewrite <- H0. rewrite H0 in H. rewrite !Eq.bind_ret_l in H.
+    rewrite H0. rewrite Eq.bind_ret_l. auto.
   + eapply eqit_Tau_l in H0.
     setoid_rewrite eutt_Tau in H0.
     apply IHReturns.
@@ -639,7 +581,7 @@ Proof.
   rewrite Returns_mayRet.
   revert k v H0.
   induction H; intros.
-  - rewrite H. setoid_rewrite bind_ret_l.
+  - rewrite H. setoid_rewrite Eq.bind_ret_l.
     eauto.
   - rewrite tau_eutt in H. rewrite H. eapply IHReturns; eauto.
   - rewrite H. setoid_rewrite bind_vis.
@@ -721,7 +663,7 @@ Proof.
       repeat red. pstep. red. rewrite EQma. constructor. auto.
     }
     rewrite H in H_fst, H_snd. cbn in *. unfold ITree.map in *.
-    rewrite bind_ret_l in H_fst. rewrite bind_ret_l in H_snd.
+    rewrite Eq.bind_ret_l in H_fst. rewrite Eq.bind_ret_l in H_snd.
     apply eqit_inv_Ret in H_fst.
     apply eqit_inv_Ret in H_snd.
     destruct r. apply euttG_ret. split; eauto.
@@ -798,7 +740,7 @@ Proof.
     unfold fmap in *. subst. rewrite <- Q in Heqot. rewrite <- Q' in Heqos.
     apply eqit_inv_bind_ret in Heqot, Heqos. crunch.
     rewrite H0, H in EQ'. efinal. rewrite H, H0.
-    apply eqit_inv in H1, H2. cbn in *. subst. rewrite! bind_ret_l in EQ'.
+    apply eqit_inv in H1, H2. cbn in *. subst. rewrite! Eq.bind_ret_l in EQ'.
     apply eqit_inv in EQ'. cbn in *. subst. destruct x, x0.
     apply eqit_Ret. constructor; eauto.
   - symmetry in Heqot, Heqos.
@@ -833,7 +775,8 @@ Proof.
     destruct (observe m1) eqn : Hm1.
     + apply observe_eqitree in Hm1. rewrite Hm1 in EQ'.
       symmetry in Heqot. apply observe_eqitree in Heqot.
-      unfold fmap in *. rewrite <- Q in Heqot. rewrite Hm1 in Heqot. setoid_rewrite bind_ret_l in Heqot.
+      unfold fmap in *. rewrite <- Q in Heqot. rewrite Hm1 in Heqot.
+      setoid_rewrite Eq.bind_ret_l in Heqot.
       punfold Heqot. inv Heqot. inv CHECK0.
     + rewrite tau_euttge. rewrite itree_eta. eapply IHEQ; eauto.
       symmetry in Heqot. apply observe_eqitree in Hm1, Heqot.
@@ -852,7 +795,7 @@ Proof.
     destruct (observe m2) eqn : Hm1.
     + apply observe_eqitree in Hm1. rewrite Hm1 in EQ'.
       symmetry in Heqos. apply observe_eqitree in Heqos.
-      unfold fmap in *. rewrite <- Q' in Heqos. rewrite Hm1 in Heqos. setoid_rewrite bind_ret_l in Heqos.
+      unfold fmap in *. rewrite <- Q' in Heqos. rewrite Hm1 in Heqos. setoid_rewrite Eq.bind_ret_l in Heqos.
       punfold Heqos. inv Heqos. inv CHECK0.
     + rewrite tau_euttge. rewrite (itree_eta t). eapply IHEQ; eauto.
       symmetry in Heqos. apply observe_eqitree in Hm1, Heqos.
@@ -977,7 +920,7 @@ Proof.
     destruct (observe ma1) eqn : Hma1.
     + apply observe_eqitree in Hma1. rewrite Hma1 in Q.
       symmetry in Heqot. apply observe_eqitree in Heqot.
-      unfold fmap in *. rewrite <- Q in Heqot. setoid_rewrite bind_ret_l in Heqot.
+      unfold fmap in *. rewrite <- Q in Heqot. setoid_rewrite Eq.bind_ret_l in Heqot.
       punfold Heqot. inv Heqot. inv CHECK0.
     + rewrite tau_euttge. rewrite itree_eta. eapply IHEQ; eauto; cycle 1.
       symmetry in Heqot. apply observe_eqitree in Hma1, Heqot.
@@ -995,7 +938,7 @@ Proof.
     destruct (observe ma2) eqn : Hma1.
     + apply observe_eqitree in Hma1.
       symmetry in Heqos. apply observe_eqitree in Heqos.
-      unfold fmap in *. rewrite <- Q' in Heqos. rewrite Hma1 in Heqos. setoid_rewrite bind_ret_l in Heqos.
+      unfold fmap in *. rewrite <- Q' in Heqos. rewrite Hma1 in Heqos. setoid_rewrite Eq.bind_ret_l in Heqos.
       punfold Heqos. inv Heqos. inv CHECK0.
     + rewrite tau_euttge. rewrite (itree_eta t). eapply IHEQ; eauto; cycle 1.
     symmetry in Heqos. apply observe_eqitree in Hma1, Heqos.
@@ -1054,7 +997,7 @@ Proof.
     unfold fmap in *. subst. rewrite <- Q in Heqot. rewrite <- Q' in Heqos.
     apply eqit_inv_bind_ret in Heqot, Heqos. crunch.
     rewrite H0, H in EQ'. efinal. rewrite H, H0.
-    apply eqit_inv in H1, H2. cbn in *. subst. unfold ITree.map in *. rewrite! bind_ret_l in EQ'.
+    apply eqit_inv in H1, H2. cbn in *. subst. unfold ITree.map in *. rewrite! Eq.bind_ret_l in EQ'.
     apply eqit_inv in EQ'. cbn in *. subst.
     inv REL. inv EQ'.
     all : unfold fst_sum, snd_sum in *; destruct x0 eqn: Hx0; destruct x eqn: Hx.
@@ -1098,7 +1041,7 @@ Proof.
     destruct (observe ma) eqn : Hma.
     + apply observe_eqitree in Hma. rewrite Hma in EQ'.
       symmetry in Heqot. apply observe_eqitree in Heqot.
-      unfold fmap in *. rewrite <- Q in Heqot. rewrite Hma in Heqot. setoid_rewrite bind_ret_l in Heqot.
+      unfold fmap in *. rewrite <- Q in Heqot. rewrite Hma in Heqot. setoid_rewrite Eq.bind_ret_l in Heqot.
       punfold Heqot. inv Heqot. inv CHECK0.
     + rewrite tau_euttge. rewrite itree_eta. eapply IHEQ; eauto.
       symmetry in Heqot. apply observe_eqitree in Hma, Heqot.
@@ -1117,7 +1060,7 @@ Proof.
     destruct (observe ma') eqn : Hma.
     + apply observe_eqitree in Hma. rewrite Hma in EQ'.
       symmetry in Heqos. apply observe_eqitree in Heqos.
-      unfold fmap in *. rewrite <- Q' in Heqos. rewrite Hma in Heqos. setoid_rewrite bind_ret_l in Heqos.
+      unfold fmap in *. rewrite <- Q' in Heqos. rewrite Hma in Heqos. setoid_rewrite Eq.bind_ret_l in Heqos.
       punfold Heqos. inv Heqos. inv CHECK0.
     + rewrite tau_euttge. rewrite (itree_eta t). eapply IHEQ; eauto.
       symmetry in Heqos. apply observe_eqitree in Hma, Heqos.
@@ -1180,19 +1123,19 @@ Qed.
 #[global]
 Instance bind_ret_l_ITree {E}: BindRetL (itree E).
 Proof.
-  red. intros *. red. setoid_rewrite bind_ret_l. reflexivity.
+  red. intros *. red. setoid_rewrite Eq.bind_ret_l. reflexivity.
 Qed.
 
 #[global]
 Instance bind_ret_r_ITree {E}: BindRetR (itree E).
 Proof.
-  red. intros *. red. setoid_rewrite bind_ret_r. reflexivity.
+  red. intros *. red. setoid_rewrite Eq.bind_ret_r. reflexivity.
 Qed.
 
 #[global]
 Instance bind_bind_ITree {E}: BindBind (itree E).
 Proof.
-  red. intros *. red. setoid_rewrite bind_bind. reflexivity.
+  red. intros *. red. setoid_rewrite Eq.bind_bind. reflexivity.
 Qed.
 
 #[global]
@@ -1234,7 +1177,7 @@ Proof.
     + edestruct IHReturns; cycle 1; eauto.
       rewrite H1.
       rewrite tau_eutt in H2.
-      rewrite <- H2. setoid_rewrite bind_ret_l. reflexivity.
+      rewrite <- H2. setoid_rewrite Eq.bind_ret_l. reflexivity.
   - rewrite H in H1. clear H. symmetry in H1. apply eutt_inv_bind_vis in H1; crunch.
     + edestruct IHReturns.
       rewrite <- H1. eapply eutt_clo_bind; intros; subst; try reflexivity. subst. reflexivity.
@@ -1252,14 +1195,13 @@ Proof.
 Defined.
 
 #[global]
-Instance _eqmR_inv' {E}: EqmRInv (itree E).
+Instance eqmR_inv_itree {E}: EqmRInv (itree E).
 Proof.
   repeat intro.
   rewrite <- (Eq.bind_ret_r ma) in H.
   eapply @eutt_bind_inv_homog in H; eauto.
   eapply eqit_inv in H; eauto.
 Qed.
-
 
 Global Instance EqmRMonadInverses_ITree {E} : EqmRInversionProperties (itree E).
 Proof.

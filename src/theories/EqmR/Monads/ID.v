@@ -1,3 +1,5 @@
+(** *EqmR-related laws for the identity monad. *)
+
 (* begin hide *)
 From Coq Require Import
      Init.Specif
@@ -28,8 +30,6 @@ Import RelNotations.
 Local Open Scope relationH_scope.
 (* end hide *)
 
-(** *Identity monad. *)
-
 Definition ID (X: Type) := X.
 
 Global Instance Monad_MonadID : Monad ID.
@@ -41,11 +41,8 @@ Defined.
 Definition eqmR_ID : forall (A B : Type) (R : relationH A B), relationH (ID A) (ID B) :=
   fun _ _ R => R.
 
-#[global] 
-Instance EqmR_ID : EqmR ID :=
-  {
-  eqmR := eqmR_ID;
-  }.
+#[global]
+Instance EqmR_ID : EqmR ID := {|eqmR := eqmR_ID|}.
 
 Lemma eqmR_prod_sum_rel_ID:
   forall (A B C : Type) (ma ma' : ID (C + A * B)%type) (RA : relationH A A)

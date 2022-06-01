@@ -1,3 +1,6 @@
+(** *EqmR-related laws for the state monad. *)
+
+(* begin hide *)
 From Coq Require Import
      Lia
      Setoid
@@ -27,8 +30,8 @@ Import RelNotations.
 Local Open Scope relationH_scope.
 
 Existing Class inhabited.
+(* end hide *)
 
-(* Really, just a state transformer applied to ID. *)
 Section StateEq.
   Variable S : Type.
 
@@ -42,11 +45,8 @@ Section StateEq.
 
   Lemma equal_typ {A} {x : A} : x = x. reflexivity. Qed.
 
-  Global Instance EqmR_state : EqmR (state S) :=
-    {
-      eqmR := eqmR_state
-    }.
-
+  #[global]
+   Instance EqmR_state : EqmR (state S) := {|eqmR := eqmR_state|}.
 
   (* Couple properties about state [mayRet]. *)
   Definition state_prop {A : Type} (ma : state S A) :=
@@ -102,7 +102,6 @@ Section StateEq.
     | [ x : S , H : eqmR_state _ _ _ _ _ |- _ ] => specialize (H x)
     end;
     destruct_hyp; split; [ split | ]; auto; intros * <-; rewrite_eq.
-
 
   Instance eqmR_conj_state: RelConj (state S).
   Proof.
@@ -443,93 +442,6 @@ Section StateEq.
   Definition mayRetA {A : Type} : A -> Prop :=
     (fun (a : A) => imageA a a).
 
-(*       WTS: *)
-
-(*       eqmR RB @ (bind k @ ma, bind k @ ma) -> *)
-(*       forall a : A, mayRet (state S) ma @ a -> eqmR RB @ (k @ a, k @ a). *)
-
-(*       ------------------------------------------------------------- *)
-
-(*       Example: *)
-
-(*             bind :: m a -> (a -> m b) -> m b *)
-(*             bind ma k = \s -> let (s', x) = ma @ s in k @ x @ s' *)
-
-(*       ma :: state Int Int *)
-(*       [ ma = {| x <- get; put (x + 1); return x |} ] *)
-
-(*       k :: Int -> state Int String *)
-(*       [ k = \a -> {| put a; return (to_string (a)) |} ] *)
-
-(*       If we assume that: *)
-(*                eqmR String (bind k @ ma, bind k @ ma) *)
-(*                mayRet (state Int) ma @ {x | x > 0} *)
-
-(*       k @ {x | x > 0} should always agree with itself, because k is a function. *)
-(*    *)
-
-  (* Too weak *)
-  Lemma state_eqmR_bind_inv :
-    forall (A B : Type) (ma : state S A) (k : A -> state S B) (R : relationH B B),
-      bind ma k ≈{ R } bind ma k ->
-      forall a : A, a ∈ ma ->
-          forall b, b ∈ k a ->
-              (forall b, b ∈ k a -> R b b) ->
-                    exists a' : A, a' ∈ ma /\ k a ≈{ R } k a'.
-  Proof.
-    intros.
-    exists a. split; auto. split. 2 : auto.
-    eapply H2.
-    apply mayRet_state. exists s.
-    destruct (k a s). subst. eauto.
-  Qed.
-
-  Lemma state_eqmR_bind_inv' :
-    forall (A B : Type) (ma : state S A) (k : A -> state S B) (R : relationH B B),
-      bind ma k ≈{ R } bind ma k ->
-      forall a, a ∈ ma -> exists b, b ∈ k a.
-  Proof.
-    repeat intro.
-    apply mayRet_state in H0. crunch.
-    destruct (k a x0) eqn: Hk.
-    esplit; eauto.
-    apply mayRet_state.
-    repeat red in H.
-    unfold bind, Monad_state, bind_state in H.
-    specialize (H x). crunch.
-    all : rewrite H0 in *; cbn in *. exists x0.
-    eauto.
-  Qed.
-
-  Lemma state_eqmR_bind_inv'' :
-    forall (A B : Type) (ma : state S A) (k : A -> state S B) (R : relationH B B),
-      bind ma k ≈{ R } bind ma k ->
-      exists a, a ∈ ma /\ exists (s : S), R (snd (k a s)) (snd (k a s)) /\ (fst (k a s) = fst (k a s)).
-  Proof.
-    repeat intro.
-    inv IS. destruct (ma X) eqn: Hma.
-    assert (a ∈ ma). {
-      apply mayRet_state.
-      exists X; eauto.
-    }
-    esplit; split; eauto.
-    repeat red in H.
-
-    unfold bind, Monad_state, bind_state in H.
-    specialize (H X). rewrite Hma in H. cbn in *. eexists; eapply H.
-  Qed.
-
-  Lemma state_eqmR_bind_inv''' :
-    forall (A B : Type) (ma : state S A) (k : A -> state S B) (R : relationH B B),
-      bind ma k ≈{ R } bind ma k ->
-      forall a i, (forall s, ma i = (s, a)) -> k a ≈{R} k a.
-  Proof.
-    repeat intro. repeat red in H.
-    unfold bind, Monad_state, bind_state in H. split; eauto.
-    specialize (H i). crunch.
-    specialize (H0 s). rewrite H0 in H. cbn in *. eauto.
-  Qed.
-
   Instance state_mayRet_bind_inv : MayRetBindInv (state S).
   Proof.
     red; intros.
@@ -558,10 +470,11 @@ Section StateEq.
     cbn in *.
     rewrite Hma, H0 in H. eauto.
   Qed.
+
   Definition state_prop_ {A : Type} (ma ma': state S A) :=
     (fun a a' : A => exists s s' s'' : S, (ma s) = (s', a) /\ (ma' s) = (s'', a')).
 
-  Lemma image__state {A:Type} (ma ma': state S A) (a a': A) :
+  Lemma image_state {A:Type} (ma ma': state S A) (a a': A) :
     (exists s s' s'': S, (ma s) = (s', a) /\ (ma' s) = (s'', a')) ->
     image_ _ ma ma' a a'.
   Proof.
@@ -632,7 +545,6 @@ Proof. apply mayRet_state. exists 2. cbn. exists 2; eauto. Qed.
 Lemma k_mayRet :
   0 ∈ k 0.
 Proof. apply mayRet_state. cbn. eauto. Qed.
-
 
 Lemma bind_mayRet:
   ~ (0 ∈ bind ma k).

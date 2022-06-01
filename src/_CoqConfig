@@ -47,6 +47,7 @@ theories/EqmR/Monads/State.v
 theories/EqmR/Monads/StateT.v
 theories/EqmR/Monads/Error.v
 theories/EqmR/Monads/ErrorT.v
+theories/EqmR/Monads/Prop.v
 
 theories/Basics/MonadState.v
 theories/Basics/MonadFail.v

@@ -84,7 +84,7 @@ End Carrier.
 (*
   The following line removes the warning on >=8.10, but is incompatible for <8.10
 *)
-(* Declare Scope cat_scope. *)
+Declare Scope cat_scope.
 Delimit Scope cat_scope with cat.
 
 (** ** Categories *)

@@ -1,3 +1,6 @@
+(** *EqmR-related laws for the prop monad. *)
+
+(* begin hide *)
 From Coq Require Import
      Lia
      Setoid
@@ -22,6 +25,7 @@ Local Open Scope cat.
 
 Import RelNotations.
 Local Open Scope relationH_scope.
+(* end hide *)
 
 (* Trying to define the EqmR version of PropM
 

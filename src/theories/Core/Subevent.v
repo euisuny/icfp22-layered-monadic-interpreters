@@ -1,11 +1,19 @@
 (** * Extensible effects *)
 
-(** This file contains the Subevent, Over, and Trigger typeclasses, which is a
+(** Interface for extensible effects.
+
+    This file contains the Subevent, Over, and Trigger typeclasses, which is a
     practical solution for handling sums of events for extensible effects.
+    - [Subevent]: an isomorphism between event signatures
+    - [Trigger]: operation for a minimal impure computation
+    - [Over]: lifting of handlers over sums of events
 
     We characterize isomorphisms between _sums of events_, where we use
     typeclass resolution to infer the correct type-injections for the [over] and
-    [trigger] combinators. *)
+    [trigger] combinators.
+
+    Typeclass resolution is used for the automatic injection of handlers over large
+    sums of events. *)
 
 (* begin hide *)
 From Coq Require Import
@@ -35,9 +43,14 @@ Import ITree.Basics.Basics.Monads.
 Set Implicit Arguments.
 (* end hide *)
 
-(** * Subevents
+(** ** Subevents
 
-  Subevents provide an isomorphism between event signatures. *)
+  Subevents provide an isomorphism between event signatures. Instances of
+  subevents can be used for automatically inferring whether or not an event
+  signature is part of a large sum of events.
+
+  The operator for sums is associative and commutative (which is formulated
+  in Section [Subevent_Instances]). *)
 Section Subevent.
 
   Class Subevent {A B C : Type -> Type} : Type := {
@@ -52,6 +65,7 @@ Section Subevent.
   Arguments split_E {_ _ _ _} [_].
   Arguments merge_E {_ _ _ _} [_].
 
+  (** Injection and case analysis for events *)
   Definition inj1 {A B C} `{Subevent A B C} : A ~> B :=  inl_ >>> merge_E.
   Definition inj2 {A B C} `{Subevent A B C} : C ~> B :=  inr_ >>> merge_E.
   Definition case  {A B C} `{Subevent A B C} : B ~> (A +' C) := split_E.
@@ -66,7 +80,7 @@ Arguments inj2 {_ _ _ _} [_].
 Notation "A +? C -< B" := (Subevent A B C)
                             (at level 89, left associativity) : type_scope.
 
-(** *Triggerable Monads
+(** ** Triggerable Monads
 
     A _trigger_ is defined as the "minimal" impure computation performing an
     uninterpreted event.
@@ -86,26 +100,26 @@ End Trigger.
 Arguments trigger {E M Trigger} [T].
 Notation vis e k := (Vis (inj1 e) k).
 
-(** *Instances of Triggerable monads  *)
+(** *** Instances of Triggerable monads  *)
 Section Trigger_Instances.
 
-  (* The minimal [itree] that performs [e] is [Vis e (fun x => Ret x)], already
+  (** The minimal [itree] that performs [e] is [Vis e (fun x => Ret x)], already
       defined as [ITree.trigger] *)
   #[global] Instance Trigger_ITree {E F G} `{E +? F -< G}: Trigger E (itree G) :=
     fun _ e => ITree.trigger (inj1 e).
 
-  (* We allow to look for the inclusion by commuting the two arguments.
+  (** We allow to look for the inclusion by commuting the two arguments.
       By doing it only at this level it's a cheap way to explore both options
       while avoiding looping resolutions *)
   #[global] Instance Trigger_ITree_base {E} : Trigger E (itree E) :=
     fun _ e => ITree.trigger e.
 
-  (* Monad transformers with ITrees as a base monad are triggerable. *)
+  (** Monad transformers with ITrees as a base monad are triggerable. *)
   #[global] Instance Trigger_MonadT {E F G} `{E +? F -< G}
             {T : (Type -> Type) -> Type -> Type} {T_MonadT: MonadT T} : Trigger E (T (itree G)) :=
     (fun X e => lift (trigger e)).
 
-  (* The [PropT] transformer returns the propositional singleton of the
+  (** The [PropT] transformer returns the propositional singleton of the
     underlying trigger. However, we might want this singleton to be up to some equivalence *)
   #[global] Instance Trigger_Prop {E} {M} `{Monad M} `{Trigger E M} :
     Trigger E (fun X => M X -> Prop) :=
@@ -114,7 +128,7 @@ Section Trigger_Instances.
 End Trigger_Instances.
 
 
-(** *Over: Automatic injection for handlers
+(** ** Over: injection for handlers over sums of events
 
    Generic lifting of an handler over a super-set of events. The function relies
    on the constraint [A +? C -< B] to know how to case analyse on a [B] event. *)
@@ -126,7 +140,7 @@ Definition over {A B C M : Type -> Type} {S:A +? C -< B} {T:Trigger C M} (f : A 
 
 Arguments over {_ _ _ _ _ _} _ [_] _.
 
-(* A few auxiliary lemmas. *)
+(** A few auxiliary lemmas for injection. *)
 Lemma case_inj1: forall {A B C: Type -> Type} `{Sub: A +? C -< B} {SubWF: Subevent_wf Sub} {T} (e: A T),
     case (inj1 e) = inl_ _ e.
 Proof.
@@ -163,7 +177,7 @@ Proof.
   unfold over; rewrite case_inj2; reflexivity.
 Qed.
 
-(** *Instances for Automatic Injection
+(** ** Instances for Automatic Injection
 
     We characterize the algebraic properties of the abstract sum operation [+?]
     for automatically injecting the handlers over a sum of events.
@@ -179,7 +193,7 @@ Section Subevent_Instances.
     Class CUnit : Type := CUnitC {}.
     Global Instance cUnit: CUnit := CUnitC.
 
-    (** Event level instances *)
+    (** *** Event level instances *)
     (* The subeffect relationship is reflexive: [A -<  A] *)
     #[local] Instance Subevent_refl `{CUnit} {A : Type -> Type} : A +? void1 -< A :=
       {| split_E := inl_: IFun _ _
@@ -217,6 +231,7 @@ Section Subevent_Instances.
         merge_E := assoc_l >>> merge_E
       |}.
 
+    (** Associativity of subevents *)
     #[local] Instance Subevent_Assoc1 `{CUnit} {A B C D E: Type -> Type} `{Subevent (A +' (B +' C)) D E} : Subevent ((A +' B) +' C) D E :=
       {| split_E := split_E >>> case_ (assoc_l >>> inl_) inr_
          ; merge_E := bimap assoc_r (id_ _) >>> merge_E
@@ -234,6 +249,7 @@ Section Subevent_Instances.
           ; merge_E := (bimap (id_ _) assoc_r) >>> merge_E
       |}.
 
+    (** Other instances that are useful for efficient resolution. *)
     #[local] Instance Subevent_forget_order `{CUnit}
              {E C1 C2 A B}
              {Sub1: A +? C1 -< E}
@@ -296,6 +312,7 @@ Section Subevent_Instances.
         intros ? [|[|]]; cbn; reflexivity.
     Qed.
 
+    (** Commutativity of subevents *)
     #[local] Instance Subevent_commute
              `{CUnit}
              {A B C}
@@ -304,64 +321,69 @@ Section Subevent_Instances.
       {| split_E := split_E >>> swap
          ; merge_E := swap >>> merge_E |}.
 
-   (** *Well-formedness of the instances
+   (** *** Well-formedness of the instances
 
       Each subevent instance defines an isomorphism. *)
     #[local] Instance Subevent_refl_wf {A : Type -> Type} : @Subevent_wf A _ _ Subevent_refl.
-    constructor.
-    - cbv; reflexivity.
-    - cbv; intros ? [? | []]; reflexivity.
+    Proof.
+      constructor.
+      - cbv; reflexivity.
+      - cbv; intros ? [? | []]; reflexivity.
     Qed.
 
     #[local] Instance Subevent_void_wf {A : Type -> Type} : @Subevent_wf _ A _ Subevent_void.
-    constructor.
-    - cbv; reflexivity.
-    - cbv. intros ? [[] | ?]; reflexivity.
+    Proof.
+      constructor.
+      - cbv; reflexivity.
+      - cbv. intros ? [[] | ?]; reflexivity.
     Qed.
 
     #[global] Instance Subevent_Base_wf {A B: Type -> Type} : Subevent_wf (@Subevent_Base _ A B).
-    constructor; split; cbv; reflexivity.
+    Proof.
+      constructor; split; cbv; reflexivity.
     Qed.
 
     #[local] Instance Subevent_to_complement_wf {A B C D: Type -> Type}
              {Sub: (A +' B) +? C -< D}
              {SubWf: Subevent_wf Sub}
       : Subevent_wf (@Subevent_to_complement _ _ _ _ _ Sub).
-    constructor.
-    - cbn.
-      apply SemiIso_Cat.
-      apply SubWf.
-      apply AssocRMono_Coproduct.
-    - cbn.
-      apply SemiIso_Cat.
-      apply AssocLMono_Coproduct.
-      apply SubWf.
+    Proof.
+      constructor.
+      - cbn.
+        apply SemiIso_Cat.
+        apply SubWf.
+        apply AssocRMono_Coproduct.
+      - cbn.
+        apply SemiIso_Cat.
+        apply AssocLMono_Coproduct.
+        apply SubWf.
     Qed.
 
     #[local] Instance Subevent_Assoc1_wf {A B C D E: Type -> Type}
              {Sub: (A +' B +' C) +? E -< D}
              {SubWf: Subevent_wf Sub}
       : Subevent_wf (@Subevent_Assoc1 _ A B C D E Sub).
-    constructor.
-    - cbn.
-      apply SemiIso_Cat.
-      apply SubWf.
-      unfold SemiIso.
-      rewrite cat_case.
-      rewrite cat_assoc, inl_bimap.
-      rewrite <- cat_assoc, assoc_l_mono, cat_id_l.
-      rewrite inr_bimap, cat_id_l.
-      rewrite <- case_eta.
-      reflexivity.
-    - cbn. apply SemiIso_Cat.
-      2 : apply SubWf.
-      unfold SemiIso.
-      rewrite bimap_case.
-      rewrite cat_id_l.
-      rewrite <- cat_assoc, assoc_r_mono.
-      rewrite cat_id_l.
-      rewrite <- case_eta.
-      reflexivity.
+    Proof.
+      constructor.
+      - cbn.
+        apply SemiIso_Cat.
+        apply SubWf.
+        unfold SemiIso.
+        rewrite cat_case.
+        rewrite cat_assoc, inl_bimap.
+        rewrite <- cat_assoc, assoc_l_mono, cat_id_l.
+        rewrite inr_bimap, cat_id_l.
+        rewrite <- case_eta.
+        reflexivity.
+      - cbn. apply SemiIso_Cat.
+        2 : apply SubWf.
+        unfold SemiIso.
+        rewrite bimap_case.
+        rewrite cat_id_l.
+        rewrite <- cat_assoc, assoc_r_mono.
+        rewrite cat_id_l.
+        rewrite <- case_eta.
+        reflexivity.
     Qed.
 
     #[local] Instance Subevent_Assoc2_wf {A B C D E: Type -> Type}
@@ -463,7 +485,7 @@ Section Subevent_Instances.
 
 End Subevent_Instances.
 
-(* Hints for typeclass resolution *)
+(** ** Automatic solver for associating subevents *)
 #[global] Existing Instance Subevent_refl          | 0.
 #[global] Existing Instance Subevent_void          | 0.
 #[global] Existing Instance Subevent_Base          | 0.

@@ -4,6 +4,8 @@
    which are from Johann and Ghani's work on primitive nested types in Haskell
    (See https://arxiv.org/pdf/2101.04819.pdf).
 
+   Higher-order functors have a functorial structure over higher-order functions.
+
    We use higher-order functor well-formedness properties for stating well-formedness
    properties over monad transformers, which are higher order functors (similarly
    to how monads form a functor).

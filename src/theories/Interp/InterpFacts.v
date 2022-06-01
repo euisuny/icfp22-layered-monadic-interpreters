@@ -1,10 +1,17 @@
-(** * Theorems about [interpH] *)
+(** *Reasoning principles for interpretable layered monads *)
 
-(** Main facts:
-    - [unfold_interpH]: Unfold lemma.
-    - [interpH_bind]: [interpH] is a monad morphism.
-    - [interpH_trigger]: Events are interpHreted using a handler.
- *)
+(* When we layer the [interp] combinator, we also intend certain structural
+  properties to hold at each layer of interpretation. Most importantly,
+  it should respect monadic operators such as [ret] and [bind] and interact
+  well with iteration.
+
+  Given an interpretable monad equipped with an appropriate instance of [eqmR],
+  we can state laws for the [trigger], [over], and [interp] functions that are
+  expected.
+
+  Thanks to the fact that iterative monad transformers form higher order functors
+  which are monad morphisms (as shown in [HFunctor.v]), we only need to prove
+  this structural property once and for all for each monad transformer. *)
 
 (* begin hide *)
 From Coq Require Import
@@ -52,6 +59,7 @@ Local Open Scope cat_scope.
 Local Open Scope monad_scope.
 (* end hide *)
 
+(** *Structural laws for interpretation. *)
 Section interp_laws.
 
   Context (T : (Type -> Type) -> Type -> Type)
@@ -129,9 +137,15 @@ Arguments interp_proper {_ _ _ _ _ _ _} [_].
 
 #[global]
 Existing Instance itree_interp.
-(* We can define [U] to be a monad transformer which is a higher-order functor. *)
-(*    Higher-order functors (Ghani & Johann) allow a functorial structure over *)
-(*    higher-order functions *)
+
+(** *Nesting interpretation *)
+(* We can stack interpretation, in the sense that given a higher-order functor [T]
+   and iterative monad [M] (which is the semantic domain for interpreting an itree)
+   the interpretable monad instance can be derived for the interpretation from
+   [T (itree)] to [T M].
+
+   In order to define this function, we use the higher-order fmap [hfmap] and lift
+   the [itree_interp] function over the [T (itree)]. *)
 #[global] Instance stack_interp
        {T : (Type -> Type) -> Type -> Type}
        {M : Type -> Type}
@@ -342,12 +356,14 @@ Section Facts.
           {M_EqmR : EqmR M}
           {M_MonadIter : MonadIter M}
           {M_wf : WF_IterativeMonad M _ _ _}
-          {itree_monad_morphism : forall (E : Type -> Type) (f : E ~> M), MonadMorphism (itree_interp (I := E) f)}
-          {itree_iter_morphism : forall (E : Type -> Type) (f : E ~> M), IterMorphism (itree_interp (I := E) f)}.
+          {itree_monad_morphism : forall (E : Type -> Type) (f : E ~> M),
+              MonadMorphism _ _ (itree_interp (I := E) f)}
+          {itree_iter_morphism : forall (E : Type -> Type) (f : E ~> M),
+              IterMorphism (itree_interp (I := E) f)}.
 
   #[local] Instance M_IM: IterativeMonad M. constructor; eauto. Defined.
 
-  (** ** [interp] and constructors *)
+  (** * [interp] and constructors *)
   (** These are specializations of [unfold_interp], which can be added as
       rewrite hints. *)
   Lemma _interp_ret {E R} (f : E ~> M) (x: R):
@@ -606,7 +622,8 @@ Section Facts.
           {T_HFunctor:HFunctor T}
           {T_WF_IterativeMonadT : WF_IterativeMonadT T _ _}
           {T_wf : @WF_HFunctor T _ _ _ _}
-          {itree_monad_morphism : forall (E : Type -> Type) (f : E ~> T (itree F)), MonadMorphism (itree_interp (I := E) f)}
+          {itree_monad_morphism : forall (E : Type -> Type) (f : E ~> T (itree F)),
+              MonadMorphism _ _ (itree_interp (I := E) f)}
           {itree_iter_morphism : forall (E : Type -> Type) (f : E ~> T (itree F)),
               IterMorphism (itree_interp (I := E) f)}.
 
