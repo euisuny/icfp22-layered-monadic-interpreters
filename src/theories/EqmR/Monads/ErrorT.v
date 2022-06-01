@@ -64,8 +64,7 @@ Section Monad_Error.
   Proof.
     repeat intro.
     cbn in *. red in m1, m2.
-    
-    (* TODO: get rid of functional extensionality using Proper_eqmR instances *)
+
     assert (forall A B, (fun x : sum exn (prod A B) =>
               match x with
               | inl e => ret (m := m) (inl e)
@@ -229,7 +228,6 @@ Section Monad_Error.
     forall A B : Type, Proper (subrelationH (B:=B) ==> subrelationH (B:=m (exn + B))) (fun R : relationH A B => eqmR R).
   Proof.
     intros!. red. red in H0.
-    (* TODO: Be able to rewrite ⊑ ? *)
     eapply Proper_eqmR_mono; eauto.
     eapply sum_rel_monotone; eauto.
     apply subrelation_refl.
@@ -286,7 +284,6 @@ Section Monad_Error.
     cbn. eapply rel_sum; eauto.
     repeat intro.
     unfold fmap. eapply eqmR_bind_ProperH.
-    (* TODO: See if this can be done with eqmR_sum_rel? *)
     eauto. eapply rel_conj. eauto.
     eapply refl; typeclasses eauto. 
     intros; apply eqmR_ret; eauto; inv H2; destruct a2.
@@ -412,26 +409,6 @@ Section Monad_Error.
     apply eqmR_ret; eauto.
     exists a. rewrite !mayRet_errorT. split; auto.
   Qed.
-
-  (* Instance fmap_inv_mayRet_errorT : FmapInvRet errorT. *)
-  (* Proof. *)
-  (*   repeat intro. *)
-  (*   cbn in H. *)
-  (*   assert (forall A B (f : A -> B), (fun x : sum exn A => *)
-  (*             match x with *)
-  (*             | inl e => ret (m := m) (inl e) *)
-  (*             | inr a => ret (m := m) (inr (f a)) *)
-  (*           end) = *)
-  (*           fun y => ret (m := m) ((fun x => match x with | inl e => (inl e) | inr a => (inr (f a)) end) y) *)
-  (*          ). { *)
-  (*     intros. apply functional_extensionality. *)
-  (*     intros. destruct x; eauto. *)
-  (*   } *)
-  (*   rewrite !H1 in H. *)
-  (*   rewrite mayRet_errorT in H0. *)
-  (*   eapply fmap_inv_ret in H. *)
-  (*   2 : exact H0. cbn in *. eauto. *)
-  (* Qed. *)
 
   Instance fmap_inv_errorT : FmapInv errorT.
   Proof.

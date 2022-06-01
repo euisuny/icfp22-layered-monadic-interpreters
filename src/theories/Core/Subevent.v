@@ -1,11 +1,16 @@
 (** * Extensible effects *)
 
-(** Notations to handle large sums and classes for extensible effects. *)
+(** This file contains the Subevent, Over, and Trigger typeclasses, which is a
+    practical solution for handling sums of events for extensible effects.
 
+    We characterize isomorphisms between _sums of events_, where we use
+    typeclass resolution to infer the correct type-injections for the [over] and
+    [trigger] combinators. *)
+
+(* begin hide *)
 From Coq Require Import
      Setoid Morphisms.
 
-(* begin hide *)
 From ITree Require Import
      Basics.Basics
      Basics.CategoryOps
@@ -26,35 +31,27 @@ Import MonadNotation.
 Import CatNotations.
 Open Scope cat_scope.
 Import ITree.Basics.Basics.Monads.
-(* end hide *)
 
 Set Implicit Arguments.
+(* end hide *)
 
-(* Lifting of the [option] monad over indexed types *)
-Inductive option1 (A : Type -> Type) X :Type :=
-| None1
-| Some1 (_: A X)
-.
-Arguments None1 {_ _}.
-Arguments Some1 {_} [_].
+(** * Subevents
 
+  Subevents provide an isomorphism between event signatures. *)
 Section Subevent.
 
-  (* Isomorphism:  B <~> (A +' C) *)
-  Class Subevent {A B C : Type -> Type} : Type :=
-    {
-      split_E : B ~> A +' C ;
-      merge_E : (A +' C) ~> B
-    }.
+  Class Subevent {A B C : Type -> Type} : Type := {
+    split_E : B ~> A +' C ;
+    merge_E : (A +' C) ~> B
+  }.
 
   Class Subevent_wf {A B C} (sub: @Subevent A B C): Prop :=
-      {
-        sub_iso :> Iso _ split_E merge_E
-      }.
+    sub_iso :> Iso _ split_E merge_E.
 
   Arguments Subevent : clear implicits.
   Arguments split_E {_ _ _ _} [_].
   Arguments merge_E {_ _ _ _} [_].
+
   Definition inj1 {A B C} `{Subevent A B C} : A ~> B :=  inl_ >>> merge_E.
   Definition inj2 {A B C} `{Subevent A B C} : C ~> B :=  inr_ >>> merge_E.
   Definition case  {A B C} `{Subevent A B C} : B ~> (A +' C) := split_E.
@@ -69,6 +66,67 @@ Arguments inj2 {_ _ _ _} [_].
 Notation "A +? C -< B" := (Subevent A B C)
                             (at level 89, left associativity) : type_scope.
 
+(** *Triggerable Monads
+
+    A _trigger_ is defined as the "minimal" impure computation performing an
+    uninterpreted event.
+
+    For the case of ITrees, it corresponds to the [trigger] combinator, i.e.
+    [trigger e := Vis e (fun x => x)]. We generalize this notion for any monad
+    that can perform a minimal impure computation. *)
+Section Trigger.
+
+
+  (** The [Trigger M E] typeclass contains an operation that given
+     an event [e] builds the "smallest" monadic value that executes [e]. *)
+  Class Trigger (E: Type -> Type) (M: Type -> Type) := trigger: E ~> M.
+
+End Trigger.
+
+Arguments trigger {E M Trigger} [T].
+Notation vis e k := (Vis (inj1 e) k).
+
+(** *Instances of Triggerable monads  *)
+Section Trigger_Instances.
+
+  (* The minimal [itree] that performs [e] is [Vis e (fun x => Ret x)], already
+      defined as [ITree.trigger] *)
+  #[global] Instance Trigger_ITree {E F G} `{E +? F -< G}: Trigger E (itree G) :=
+    fun _ e => ITree.trigger (inj1 e).
+
+  (* We allow to look for the inclusion by commuting the two arguments.
+      By doing it only at this level it's a cheap way to explore both options
+      while avoiding looping resolutions *)
+  #[global] Instance Trigger_ITree_base {E} : Trigger E (itree E) :=
+    fun _ e => ITree.trigger e.
+
+  (* Monad transformers with ITrees as a base monad are triggerable. *)
+  #[global] Instance Trigger_MonadT {E F G} `{E +? F -< G}
+            {T : (Type -> Type) -> Type -> Type} {T_MonadT: MonadT T} : Trigger E (T (itree G)) :=
+    (fun X e => lift (trigger e)).
+
+  (* The [PropT] transformer returns the propositional singleton of the
+    underlying trigger. However, we might want this singleton to be up to some equivalence *)
+  #[global] Instance Trigger_Prop {E} {M} `{Monad M} `{Trigger E M} :
+    Trigger E (fun X => M X -> Prop) :=
+    (fun T e m => m = (trigger e)).
+
+End Trigger_Instances.
+
+
+(** *Over: Automatic injection for handlers
+
+   Generic lifting of an handler over a super-set of events. The function relies
+   on the constraint [A +? C -< B] to know how to case analyse on a [B] event. *)
+Definition over {A B C M : Type -> Type} {S:A +? C -< B} {T:Trigger C M} (f : A ~> M) : B ~> M  :=
+  fun t b =>  match case b with
+           | inl1 a => f _ a
+           | inr1 c => trigger c
+           end.
+
+Arguments over {_ _ _ _ _ _} _ [_] _.
+
+(* A few auxiliary lemmas. *)
 Lemma case_inj1: forall {A B C: Type -> Type} `{Sub: A +? C -< B} {SubWF: Subevent_wf Sub} {T} (e: A T),
     case (inj1 e) = inl_ _ e.
 Proof.
@@ -84,33 +142,6 @@ Proof.
   pose proof (iso_epi IFun T (inr_ _ e)).
   auto.
 Qed.
-
-Section Trigger.
-
-  (**
-     The [Trigger M E] typeclass contains an operation that given
-     an event [e] builds the "smallest" monadic value that executes [e].
-   *)
-
-  Class Trigger (E: Type -> Type) (M: Type -> Type) := trigger: E ~> M.
-
-End Trigger.
-Arguments trigger {E M Trigger} [T].
-
-Notation vis e k := (Vis (inj1 e) k).
-(**
-   Generic lifting of an handler over a super-set of events.
-   The [Subevent] typeclass gives us the partial inverse to call the handler on its domain.
-   The [Trigger] typeclass gives us a way to otherwise embed the event into
-   the monad of interest "in a minimal way".
- *)
-Definition over {A B C M : Type -> Type} {S:A +? C -< B} {T:Trigger C M} (f : A ~> M) : B ~> M  :=
-  fun t b =>  match case b with
-           | inl1 a => f _ a
-           | inr1 c => trigger c
-           end.
-
-Arguments over {_ _ _ _ _ _} _ [_] _.
 
 Lemma over_inj1: forall {A B C M: Type -> Type}
                    {Sub: A +? C -< B} {SubWF: Subevent_wf Sub} {Trig: Trigger C M}
@@ -132,39 +163,24 @@ Proof.
   unfold over; rewrite case_inj2; reflexivity.
 Qed.
 
+(** *Instances for Automatic Injection
 
-(*************** Instances ***************)
-Section Instances.
+    We characterize the algebraic properties of the abstract sum operation [+?]
+    for automatically injecting the handlers over a sum of events.
 
-  Section Trigger_Instances.
+    The rules are as follows:
+    [void1] is the unital operator, and the [+?] operation is associative and
+    coummutative.
 
-    (* The minimal [itree] that performs [e] is [Vis e (fun x => Ret x)], already defined as [ITree.trigger] *)
-    #[global] Instance Trigger_ITree {E F G} `{E +? F -< G}: Trigger E (itree G) := fun _ e => ITree.trigger (inj1 e).
-
-    (* We allow to look for the inclusion by commuting the two arguments.
-       By doing it only at this level it's a cheap way to explore both options while avoiding looping resolutions *)
-    #[global] Instance Trigger_ITree_base {E} : Trigger E (itree E) := fun _ e => ITree.trigger e.
-
-    #[global] Instance Trigger_MonadT {E F G} `{E +? F -< G}
-              {T : (Type -> Type) -> Type -> Type} {T_MonadT: MonadT T} : Trigger E (T (itree G)) :=
-      (fun X e => lift (trigger e)).
-
-    (* The [PropT] transformer returns the propositional singleton of the underlying trigger.
-       However, we might want this singleton to be up to some equivalence *)
-    #[global] Instance Trigger_Prop {E} {M} `{Monad M} `{Trigger E M} : Trigger E (fun X => M X -> Prop) :=
-      (fun T e m => m = (trigger e)).
-
-  End Trigger_Instances.
-
-  Section Subevent_Instances.
+    Each of the instances come with a proof of isomorphism, thus guaranteeing
+    soundness of inference. *)
+Section Subevent_Instances.
 
     Class CUnit : Type := CUnitC {}.
     Global Instance cUnit: CUnit := CUnitC.
 
     (** Event level instances *)
-    (* A ~> A +' void1
-       A +' void1 ~> A *)
-    (* The subeffect relationship is reflexive: A -<  A *)
+    (* The subeffect relationship is reflexive: [A -<  A] *)
     #[local] Instance Subevent_refl `{CUnit} {A : Type -> Type} : A +? void1 -< A :=
       {| split_E := inl_: IFun _ _
          ; merge_E := unit_r: IFun _ _
@@ -175,9 +191,7 @@ Section Instances.
          ; merge_E := unit_l: IFun _ _
       |}.
 
-    (* Extends the domain to the left
-       A -< B -> C +' A -< C +' B
-     *)
+    (* Extends the domain to the left: [A -< B -> C +' A -< C +' B] *)
     #[local] Instance Subevent_Sum_In `{CUnit} {A B C D: Type -> Type} `{A +? D -< B} : (C +' A) +? D -< C +' B :=
       {|
         split_E := case_ (inl_ >>> inl_) (split_E >>> bimap inr_ (id_ _));
@@ -290,8 +304,9 @@ Section Instances.
       {| split_E := split_E >>> swap
          ; merge_E := swap >>> merge_E |}.
 
-   (** Well-formedness of the instances: each subevent instance defines an isomorphism. *)
+   (** *Well-formedness of the instances
 
+      Each subevent instance defines an isomorphism. *)
     #[local] Instance Subevent_refl_wf {A : Type -> Type} : @Subevent_wf A _ _ Subevent_refl.
     constructor; split.
     - cbv; reflexivity.
@@ -446,10 +461,9 @@ Section Instances.
         reflexivity.
     Qed.
 
-  End Subevent_Instances.
+End Subevent_Instances.
 
-End Instances.
-
+(* Hints for typeclass resolution *)
 #[global] Existing Instance Subevent_refl          | 0.
 #[global] Existing Instance Subevent_void          | 0.
 #[global] Existing Instance Subevent_Base          | 0.
@@ -475,14 +489,3 @@ match goal with
 | h: ?B +? ?A -< ?C |- _ =>
   exact (@Subevent_commute _ _ _ _ h)
 end: typeclass_instances.
-
-Section Test.
-
-  (* Small test: can we infer a view instance picking event domains 1 and 3 in a list? *)
-  Variable A B C D: Type -> Type.
-  Goal forall `{CUnit}, (A +' C) +? (B +' D) -< (A +' B +' C +' D).
-    typeclasses eauto.
-  Qed.
-
-End Test.
-
