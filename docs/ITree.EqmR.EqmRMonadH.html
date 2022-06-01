@@ -31,37 +31,20 @@
 </div>
 
 <div class="doc">
-<a id="lab58"></a><h1 class="section">Monad laws and associated typeclasses</h1>
+<a id="lab58"></a><h1 class="section">Relations over different monads</h1>
 
 </div>
 <div class="code">
+<span class="comment">(*&nbsp;In&nbsp;many&nbsp;practical&nbsp;situations,&nbsp;such&nbsp;as&nbsp;when&nbsp;expressing&nbsp;the&nbsp;correctness&nbsp;of&nbsp;a<br/>
+&nbsp;&nbsp;pass&nbsp;of&nbsp;compilation&nbsp;from&nbsp;distinct&nbsp;source&nbsp;and&nbsp;target&nbsp;languages,&nbsp;we&nbsp;need&nbsp;to&nbsp;state<br/>
+&nbsp;&nbsp;a&nbsp;relation&nbsp;over&nbsp;distinct&nbsp;monads.<br/>
+<br/>
+&nbsp;&nbsp;We&nbsp;provide&nbsp;a&nbsp;more&nbsp;general&nbsp;notion&nbsp;of&nbsp;family&nbsp;of&nbsp;relations&nbsp;that&nbsp;are&nbsp;parameterized<br/>
+&nbsp;&nbsp;by&nbsp;two&nbsp;monads,&nbsp;and&nbsp;lifts&nbsp;relations&nbsp;at&nbsp;return&nbsp;types.&nbsp;Each&nbsp;monad&nbsp;comes&nbsp;with&nbsp;its<br/>
+&nbsp;&nbsp;own&nbsp;relational&nbsp;theory,&nbsp;and&nbsp;this&nbsp;"hetergeneous"&nbsp;<span class="inlinecode"><span class="id" title="var">eqmR</span></span>&nbsp;respects&nbsp;the&nbsp;relational<br/>
+&nbsp;&nbsp;theory&nbsp;for&nbsp;each&nbsp;monad.&nbsp;*)</span><br/>
 
 <br/>
-<span class="id" title="keyword">From</span> <span class="id" title="var">Coq</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.15.0/stdlib//Coq.Classes.Morphisms.html#"><span class="id" title="library">Morphisms</span></a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.15.0/stdlib//Coq.Program.Program.html#"><span class="id" title="library">Program</span></a>.<br/>
-
-<br/>
-<span class="id" title="keyword">From</span> <span class="id" title="var">ExtLib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="library">Monad</span>.<br/>
-
-<br/>
-<span class="id" title="keyword">From</span> <span class="id" title="var">ITree</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="ITree.Basics.HeterogeneousRelations.html#"><span class="id" title="library">Basics.HeterogeneousRelations</span></a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="ITree.Basics.Function.html#"><span class="id" title="library">Basics.Function</span></a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="ITree.Basics.FunctionFacts.html#"><span class="id" title="library">Basics.FunctionFacts</span></a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="ITree.Basics.CategoryTheory.html#"><span class="id" title="library">CategoryTheory</span></a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="ITree.Basics.CategoryOps.html#"><span class="id" title="library">CategoryOps</span></a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="ITree.EqmR.EqmRMonad.html#"><span class="id" title="library">EqmR.EqmRMonad</span></a>.<br/>
-
-<br/>
-<span class="id" title="keyword">Set</span> <span class="id" title="var">Primitive</span> <span class="id" title="var">Projections</span>.<br/>
-
-<br/>
-<span class="id" title="keyword">Import</span> <a class="idref" href="ITree.Basics.CategoryOps.html#CatNotations"><span class="id" title="module">CatNotations</span></a>.<br/>
-<span class="id" title="keyword">Import</span> <span class="id" title="module">MonadNotation</span>.<br/>
-<span class="id" title="keyword">Local Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">monad_scope</span>.<br/>
-<span class="id" title="keyword">Local Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">cat_scope</span>.<br/>
 
 <br/>
 <span class="id" title="keyword">Section</span> <a id="EqmRH" class="idref" href="#EqmRH"><span class="id" title="section">EqmRH</span></a>.<br/>
@@ -73,10 +56,8 @@
 &nbsp;&nbsp;&nbsp;&nbsp;}.<br/>
 
 <br/>
-&nbsp;&nbsp;<span class="comment">(*<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;more&nbsp;traditional&nbsp;notion&nbsp;of&nbsp;monadic&nbsp;equivalence&nbsp;is&nbsp;recovered&nbsp;at&nbsp;the<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;equality&nbsp;relation&nbsp;<span class="inlinecode"><span class="id" title="keyword">forall</span></span> <span class="inlinecode"><span class="id" title="var">A</span>,</span>  <span class="inlinecode"><span class="id" title="var">m</span></span> <span class="inlinecode"><span class="id" title="var">A</span></span> <span class="inlinecode">-&gt;</span> <span class="inlinecode"><span class="id" title="var">m</span></span> <span class="inlinecode"><span class="id" title="var">A</span></span> <span class="inlinecode">-&gt;</span> <span class="inlinecode"><span class="id" title="keyword">Prop</span></span><br/>
-&nbsp;&nbsp;&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;The&nbsp;more&nbsp;traditional&nbsp;notion&nbsp;of&nbsp;monadic&nbsp;equivalence&nbsp;is&nbsp;recovered&nbsp;at&nbsp;the<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;equality&nbsp;relation&nbsp;<span class="inlinecode"><span class="id" title="keyword">forall</span></span> <span class="inlinecode"><span class="id" title="var">A</span>,</span>  <span class="inlinecode"><span class="id" title="var">m</span></span> <span class="inlinecode"><span class="id" title="var">A</span></span> <span class="inlinecode">-&gt;</span> <span class="inlinecode"><span class="id" title="var">m</span></span> <span class="inlinecode"><span class="id" title="var">A</span></span> <span class="inlinecode">-&gt;</span> <span class="inlinecode"><span class="id" title="keyword">Prop</span></span>&nbsp;*)</span><br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="eqmH" class="idref" href="#eqmH"><span class="id" title="definition">eqmH</span></a> {<a id="m:8" class="idref" href="#m:8"><span class="id" title="binder">m</span></a> <a id="m':9" class="idref" href="#m':9"><span class="id" title="binder">m'</span></a>: <span class="id" title="keyword">Type</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.15.0/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Type</span>} `{<a id="H:10" class="idref" href="#H:10"><span class="id" title="binder">@</span></a><a id="H:10" class="idref" href="#H:10"><span class="id" title="binder">EqmRH</span></a> <a id="H:10" class="idref" href="#H:10"><span class="id" title="binder">m</span></a> <a id="H:10" class="idref" href="#H:10"><span class="id" title="binder">m'</span></a>} {<a id="A:11" class="idref" href="#A:11"><span class="id" title="binder">A</span></a>: <span class="id" title="keyword">Type</span>} := @<a class="idref" href="ITree.EqmR.EqmRMonadH.html#eqmRH"><span class="id" title="method">eqmRH</span></a> <a class="idref" href="ITree.EqmR.EqmRMonadH.html#m:8"><span class="id" title="variable">m</span></a> <a class="idref" href="ITree.EqmR.EqmRMonadH.html#m':9"><span class="id" title="variable">m'</span></a>.<br/>
 
 <br/>
@@ -108,10 +89,10 @@
 
 <br/>
 <span class="id" title="keyword">End</span> <a class="idref" href="ITree.EqmR.EqmRMonadH.html#EqmRH_WF"><span class="id" title="section">EqmRH_WF</span></a>.<br/>
-
-<br/>
 <span class="id" title="keyword">Arguments</span> <a class="idref" href="ITree.EqmR.EqmRMonadH.html#Proper_EqmRH"><span class="id" title="class">Proper_EqmRH</span></a> {<span class="id" title="var">_</span> <span class="id" title="var">_</span>} <span class="id" title="var">_</span> {<span class="id" title="var">_</span> <span class="id" title="var">_</span>}.<br/>
 <span class="id" title="keyword">Arguments</span> <a class="idref" href="ITree.EqmR.EqmRMonadH.html#proper_eqmRH"><span class="id" title="definition">proper_eqmRH</span></a> {<span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span>} [<span class="id" title="var">_</span> <span class="id" title="var">_</span>].<br/>
+
+<br/>
 <span class="id" title="keyword">Section</span> <a id="EqmRRelH" class="idref" href="#EqmRRelH"><span class="id" title="section">EqmRRelH</span></a>.<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Context</span> (<a id="m:28" class="idref" href="#m:28"><span class="id" title="binder">m</span></a> <a id="m':29" class="idref" href="#m':29"><span class="id" title="binder">m'</span></a>: <span class="id" title="keyword">Type</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.15.0/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Type</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Context</span> {<a id="m_EqmRH:30" class="idref" href="#m_EqmRH:30"><span class="id" title="binder">m_EqmRH</span></a>: <a class="idref" href="ITree.EqmR.EqmRMonadH.html#EqmRH"><span class="id" title="class">EqmRH</span></a> <a class="idref" href="ITree.EqmR.EqmRMonadH.html#EqmRRelH.m"><span class="id" title="variable">m</span></a> <a class="idref" href="ITree.EqmR.EqmRMonadH.html#EqmRRelH.m'"><span class="id" title="variable">m'</span></a>}.<br/>
@@ -119,7 +100,7 @@
 &nbsp;&nbsp;<span class="id" title="keyword">Context</span> {<a id="m'_EqmR:32" class="idref" href="#m'_EqmR:32"><span class="id" title="binder">m'_EqmR</span></a> : <a class="idref" href="ITree.EqmR.EqmRMonad.html#EqmR"><span class="id" title="class">EqmR</span></a> <a class="idref" href="ITree.EqmR.EqmRMonadH.html#EqmRRelH.m'"><span class="id" title="variable">m'</span></a>}.<br/>
 
 <br/>
-&nbsp;&nbsp;<span class="comment">(*&nbsp;Requirements&nbsp;of&nbsp;well-formedness&nbsp;of&nbsp;<span class="inlinecode"><span class="id" title="var">eqmR</span></span>&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Requirements&nbsp;of&nbsp;well-formedness&nbsp;of&nbsp;<span class="inlinecode"><span class="id" title="var">eqmRH</span></span>&nbsp;*)</span><br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Class</span> <a id="EqmRH_OK" class="idref" href="#EqmRH_OK"><span class="id" title="record">EqmRH_OK</span></a> : <span class="id" title="keyword">Type</span> :=<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;{<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a id="eqmRH_transport_Zigzag" class="idref" href="#eqmRH_transport_Zigzag"><span class="id" title="projection">eqmRH_transport_Zigzag</span></a> :<br/>
@@ -401,6 +382,7 @@
 <span class="id" title="keyword">End</span> <a class="idref" href="ITree.EqmR.EqmRMonadH.html#EqmRHMonad"><span class="id" title="section">EqmRHMonad</span></a>.<br/>
 
 <br/>
+<span class="comment">(*&nbsp;We&nbsp;can&nbsp;derive&nbsp;a&nbsp;diagonal&nbsp;<span class="inlinecode"><span class="id" title="var">eqmRH</span></span>&nbsp;from&nbsp;a&nbsp;<span class="inlinecode"><span class="id" title="var">eqmR</span></span>&nbsp;*)</span><br/>
 #[<span class="id" title="var">global</span>] <span class="id" title="keyword">Instance</span> <a id="EqmRMonad_EqmRMonadH" class="idref" href="#EqmRMonad_EqmRMonadH"><span class="id" title="instance">EqmRMonad_EqmRMonadH</span></a><br/>
 &nbsp;{<a id="m:204" class="idref" href="#m:204"><span class="id" title="binder">m</span></a>} {<a id="m_EqmR:205" class="idref" href="#m_EqmR:205"><span class="id" title="binder">m_EqmR</span></a> : <a class="idref" href="ITree.EqmR.EqmRMonad.html#EqmR"><span class="id" title="class">EqmR</span></a> <a class="idref" href="ITree.EqmR.EqmRMonadH.html#m:204"><span class="id" title="variable">m</span></a>} {<a id="m_Monad:206" class="idref" href="#m_Monad:206"><span class="id" title="binder">m_Monad</span></a> : <span class="id" title="class">Monad</span> <a class="idref" href="ITree.EqmR.EqmRMonadH.html#m:204"><span class="id" title="variable">m</span></a>}<br/>
 &nbsp;{<a id="m_EqmR_OK:207" class="idref" href="#m_EqmR_OK:207"><span class="id" title="binder">m_EqmR_OK</span></a> : <a class="idref" href="ITree.EqmR.EqmRMonad.html#EqmR_OK"><span class="id" title="class">EqmR_OK</span></a> <a class="idref" href="ITree.EqmR.EqmRMonadH.html#m:204"><span class="id" title="variable">m</span></a>} {<a id="m_EqmRMonad:208" class="idref" href="#m_EqmRMonad:208"><span class="id" title="binder">m_EqmRMonad</span></a> : <a class="idref" href="ITree.EqmR.EqmRMonad.html#EqmRMonadLaws"><span class="id" title="class">EqmRMonadLaws</span></a> <a class="idref" href="ITree.EqmR.EqmRMonadH.html#m:204"><span class="id" title="variable">m</span></a>} : <a class="idref" href="ITree.EqmR.EqmRMonadH.html#EqmRHMonadLaws"><span class="id" title="class">EqmRHMonadLaws</span></a> <a class="idref" href="ITree.EqmR.EqmRMonadH.html#m:204"><span class="id" title="variable">m</span></a> <a class="idref" href="ITree.EqmR.EqmRMonadH.html#m:204"><span class="id" title="variable">m</span></a>.<br/>

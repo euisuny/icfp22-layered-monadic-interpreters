@@ -37,6 +37,21 @@
 <div class="code">
 
 <br/>
+<span class="comment">(*&nbsp;This&nbsp;file&nbsp;contains&nbsp;an&nbsp;equational&nbsp;axiomatization&nbsp;of&nbsp;the&nbsp;monadic&nbsp;structures&nbsp;that<br/>
+&nbsp;&nbsp;&nbsp;arise&nbsp;from&nbsp;the&nbsp;construction&nbsp;of&nbsp;layered&nbsp;monadic&nbsp;interpreters.<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;The&nbsp;base&nbsp;theory,&nbsp;<span class="inlinecode"><span class="id" title="var">EqmR</span></span>&nbsp;is&nbsp;a&nbsp;framework&nbsp;for&nbsp;relational&nbsp;reasoning&nbsp;over&nbsp;monads.<br/>
+&nbsp;&nbsp;&nbsp;They&nbsp;are&nbsp;a&nbsp;generalization&nbsp;of&nbsp;the&nbsp;ITree&nbsp;equational&nbsp;theory&nbsp;on&nbsp;<span class="inlinecode"><span class="id" title="var">eutt</span></span>,&nbsp;and&nbsp;have<br/>
+&nbsp;&nbsp;&nbsp;a&nbsp;notion&nbsp;of&nbsp;<span class="inlinecode"><span class="id" title="var">image</span></span>&nbsp;of&nbsp;a&nbsp;computation&nbsp;which&nbsp;capture&nbsp;the&nbsp;set&nbsp;of&nbsp;values&nbsp;possibly<br/>
+&nbsp;&nbsp;&nbsp;returned&nbsp;by&nbsp;a&nbsp;monadic&nbsp;computation.<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;The&nbsp;well-formedness&nbsp;conditions&nbsp;capture&nbsp;standard&nbsp;monad&nbsp;laws.<br/>
+&nbsp;&nbsp;&nbsp;Roughly,&nbsp;they&nbsp;also&nbsp;characterize&nbsp;forming&nbsp;a&nbsp;bicartesian&nbsp;closed&nbsp;category&nbsp;(a<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;cartesian&nbsp;closed&nbsp;category&nbsp;with&nbsp;finite&nbsp;coproducts).<br/>
+&nbsp;&nbsp;&nbsp;The&nbsp;laws&nbsp;also&nbsp;characterize&nbsp;inversion&nbsp;properties&nbsp;which&nbsp;consume&nbsp;relations&nbsp;over<br/>
+&nbsp;&nbsp;&nbsp;monads.&nbsp;*)</span><br/>
+
+<br/>
 
 <br/>
 <span class="id" title="keyword">Section</span> <a id="EqmR" class="idref" href="#EqmR"><span class="id" title="section">EqmR</span></a>.<br/>
@@ -739,8 +754,6 @@
 &nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-
-<br/>
 <span class="id" title="keyword">End</span> <a class="idref" href="ITree.EqmR.EqmRMonad.html#Image"><span class="id" title="section">Image</span></a>.<br/>
 
 <br/>
@@ -903,8 +916,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="ITree.EqmR.EqmRMonad.html#ma1:497"><span class="id" title="variable">ma1</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#d413dbf027cae6a55393170818dfc6e2"><span class="id" title="notation">≈{</span></a> <span class="id" title="keyword">fun</span> <a id="a1:499" class="idref" href="#a1:499"><span class="id" title="binder">a1</span></a> <a id="a2:500" class="idref" href="#a2:500"><span class="id" title="binder">a2</span></a> =&gt; <a class="idref" href="ITree.EqmR.EqmRMonad.html#R:494"><span class="id" title="variable">R</span></a> (<a class="idref" href="ITree.EqmR.EqmRMonad.html#f1:495"><span class="id" title="variable">f1</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#a1:499"><span class="id" title="variable">a1</span></a>) (<a class="idref" href="ITree.EqmR.EqmRMonad.html#f2:496"><span class="id" title="variable">f2</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#a2:500"><span class="id" title="variable">a2</span></a>)<a class="idref" href="ITree.EqmR.EqmRMonad.html#d413dbf027cae6a55393170818dfc6e2"><span class="id" title="notation">}</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#ma2:498"><span class="id" title="variable">ma2</span></a>.<br/>
 
 <br/>
-&nbsp;&nbsp;<span class="comment">(*<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;is&nbsp;the&nbsp;key&nbsp;lemma&nbsp;that&nbsp;checks&nbsp;whether&nbsp;or&nbsp;not&nbsp;the&nbsp;monad&nbsp;has&nbsp;computations<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;This&nbsp;is&nbsp;the&nbsp;key&nbsp;lemma&nbsp;that&nbsp;checks&nbsp;whether&nbsp;or&nbsp;not&nbsp;the&nbsp;monad&nbsp;has&nbsp;computations<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;which&nbsp;are&nbsp;impure&nbsp;and&nbsp;has&nbsp;an&nbsp;observable&nbsp;step.<br/>
 <br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Notably,&nbsp;the&nbsp;state&nbsp;monad&nbsp;does&nbsp;not&nbsp;respect&nbsp;this&nbsp;property&nbsp;(see&nbsp;<span class="inlinecode"><span class="id" title="var">bind_ret_inv_counterexample</span></span><br/>
