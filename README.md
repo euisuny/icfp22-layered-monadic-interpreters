@@ -29,6 +29,6 @@ The project can be built by running `make` in this directory.
 ```
 In order to build the case study, run `make` in each of the subdirectories, 
 
-### Coq Documentation
+### Documentation
 
-The coq documentation (which includes the correspondence between statements in the paper and the source code) can be found in `html/index.html`.
+The coqdoc documentation for this library is available [here](http://euisuny.github.io/icfp22-layered-monadic-interpreters/), which includes the correspondence between statements in the paper and the source code.
