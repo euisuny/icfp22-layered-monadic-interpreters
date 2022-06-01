@@ -1,8 +1,8 @@
-(** * Higher-order functors *)
+(** * Higher-order functors
 
-(* This file defines higher-order functors and well-formedness properties for them,
+  This file defines higher-order functors and well-formedness properties for them,
    which are from Johann and Ghani's work on primitive nested types in Haskell
-   (See https://arxiv.org/pdf/2101.04819.pdf).
+   (See https://core.ac.uk/download/pdf/345082304.pdf).
 
    Higher-order functors have a functorial structure over higher-order functions.
 
@@ -64,15 +64,29 @@ Local Open Scope cat_scope.
 Local Open Scope monad_scope.
 (* end hide *)
 
-(* Higher-order functors *)
-Class HFunctor (f : (Type -> Type) -> Type -> Type) :=
-{ ffmap : forall A B g, Functor g -> (A -> B) -> f g A -> f g B;
+(** ** Higher-order functors
+
+    Higher-order functors are higher-order functions that are functorial.
+    It comes with two operations:
+    - [fmap]: non-higher order fmap operator
+    - [hfmap]: higher order fmap operator *)
+Class HFunctor (f : (Type -> Type) -> Type -> Type) := {
+  ffmap : forall A B g, Functor g -> (A -> B) -> f g A -> f g B;
   hfmap : forall g h, (g ~> h) -> (f g ~> f h) }.
 
 Arguments ffmap {_ _ _ _ _ _} _ _.
 Arguments hfmap {_ _ _ _} F [_].
 
+(** Higher-order fmap respects [eqmR] *)
 Definition pointwise_eqmR
+    (g h : Type -> Type)
+    {g_Monad : Monad g} {h_Monad : Monad h} {g_EqmR : EqmR g} {h_EqmR : EqmR h} : relation (g ~> h).
+Proof.
+  repeat intro.
+  exact (forall (T1 T2 : Type) x y (RR:T1->T2->Prop), eqmR RR x y -> eqmR RR (X _ x) (X0 _ y)).
+Defined.
+
+Definition pointwise_eqmR_eq
     (g h : Type -> Type)
     {g_Monad : Monad g} {h_Monad : Monad h} {g_EqmR : EqmR g} {h_EqmR : EqmR h} : relation (g ~> h).
 Proof.
@@ -80,30 +94,72 @@ Proof.
   exact (forall (T : Type) (x y : g T), eqmR eq x y -> eqmR eq (X _ x) (X0 _ y)).
 Defined.
 
+Class HFmapProperH f (f_Hfunctor : HFunctor f) `{f_WF_MonadTLaws : WF_IterativeMonadT f} : Type :=
+  hfmap_properH_ :
+    forall (g h : Type -> Type)
+      {g_Monad : Monad g} {h_Monad : Monad h} {g_EqmR : EqmR g} {h_EqmR : EqmR h}
+      {g_EQM : EQM g _} {h_EQM : EQM h _} X1 X2 RR,
+      ProperH (pointwise_eqmR g h ~~> eqmR (m := f g) RR ~~> eqmR (m := f h) RR)
+              (fun x => @hfmap f _ g h x X1)
+              (fun x => @hfmap f _ g h x X2).
+
 Class HFmapProper f (f_Hfunctor : HFunctor f) `{f_WF_MonadTLaws : WF_IterativeMonadT f} : Type :=
   hfmap_proper_ :
     forall (g h : Type -> Type)
       {g_Monad : Monad g} {h_Monad : Monad h} {g_EqmR : EqmR g} {h_EqmR : EqmR h}
-        {g_EQM : EQM g _} {h_EQM : EQM h _} X,
-    Proper (pointwise_eqmR g h ==> eqmR (m := f g) eq ==> eqmR (m := f h) eq) (fun x => @hfmap f _ g h x X).
+      {g_EQM : EQM g _} {h_EQM : EQM h _} X,
+      Proper (pointwise_eqmR_eq g h ==> eqmR (m := f g) eq ==> eqmR (m := f h) eq)
+             (fun x => @hfmap f _ g h x X).
 
-(* Standard well-formedness property for higher-order functors *)
+Class HFmapMorphProper f (f_Hfunctor : HFunctor f) `{f_WF_MonadTLaws : WF_IterativeMonadT f} : Type :=
+  hfmap_morph_proper_ :
+    forall (g h : Type -> Type)
+      {g_Monad : Monad g} {h_Monad : Monad h} {g_EqmR : EqmR g} {h_EqmR : EqmR h}
+      {g_EQM : EQM g _} {h_EQM : EQM h _} (f : g ~> h) (f_Proper: @MorphProper _ _ _ _ f),
+      @MorphProper _ _ _ _ (hfmap f).
+
+(** ** Higher-order functor laws
+    Higher-order functors satisfy should satisfy functor laws, form a natural
+    transformation when lifting functions that operate on monads, and respect
+    [eqmR].
+
+    - [hfmap_id] and [hfmap_comp] are functor laws
+    - [hfmap_nat] states that if when lifting a functor [F] that operate on
+      monads, the higher-order functor should form a monad morphism, i.e.
+      commute with [ret] and [bind]
+    - [hfmap_proper] states that the functor respects [eqmR]. *)
 Class HFunctorLaws (f : (Type -> Type) -> Type -> Type)
       {f_Hfunctor : HFunctor f}
-      `{f_WF_MonadTLaws : WF_IterativeMonadT f} :=
-  { hfmap_id :
+      `{f_WF_MonadTLaws : WF_IterativeMonadT f} := {
+    hfmap_id :
       forall T (g : Type -> Type) `{g_EQM : EQM g} (t : f g T),
         hfmap (fun _ x => x) t ≈{eq} t;
+    hfmap_comp :
+    forall T (g h i: Type -> Type)
+           {g_Monad : Monad g} {h_Monad : Monad h} {i_Monad : Monad i}
+           {g_EqmR : EqmR g} {h_EqmR : EqmR h} {i_EqmR : EqmR i}
+           {g_EQM : EQM g _} {h_EQM : EQM h _} {i_EQM : EQM i _}
+           (f1 : g ~> h) (f2 : h ~> i)
+           (f1_Proper: @MorphProper _ _ _ _ f1)
+           (f2_Proper: @MorphProper _ _ _ _ f2) (t : f g T),
+      hfmap (fun X x => f2 _ (f1 _ x)) t ≈{eq} hfmap f2 (hfmap f1 t);
     hfmap_nat :>
       forall (g h : Type -> Type)
         {g_Monad : Monad g} {h_Monad : Monad h} {g_EqmR : EqmR g} {h_EqmR : EqmR h}
         {g_EQM : EQM g _} {h_EQM : EQM h _}
         (F : forall T, g T -> h T) {F_Nat : MonadMorphism _ _ F},
         MonadMorphism _ _ (hfmap F);
-    hfmap_proper :> HFmapProper f f_Hfunctor
+    hfmap_proper :> HFmapProper f f_Hfunctor;
+    hfmap_morph_proper :> HFmapMorphProper f f_Hfunctor
   }.
 
-(* Well-formedness properties of higher-order functors w.r.t. iterative monads *)
+(** ** Higher-order functor laws for Iterative Monads *)
+(** Well-formedness properties of higher-order functors w.r.t. iterative monads
+    - [hfmap_lift] states that [hfmap] commutes with the [lift] operation on
+      monad transformers
+    - [hfmap_iter] states that given a monad morphism [F] over iterative monads
+      which commutes with the [iter] operator, [hfmap F] also commutes with the
+      [iter] operator. *)
 Class HFunctorLawsExtra (f : (Type -> Type) -> Type -> Type)
       {f_Hfunctor : HFunctor f}
       `{f_WF_MonadTLaws : WF_IterativeMonadT f} :=
@@ -121,6 +177,8 @@ Class HFunctorLawsExtra (f : (Type -> Type) -> Type -> Type)
       @IterMorphism (f g) (f h) _ (@hfmap _ f_Hfunctor g h F) _ _;
   }.
 
+(** All well-formedness laws for HFunctors that we need for the interpretation
+    theory in [InterpFacts.v] *)
 Class WF_HFunctor (T : (Type -> Type) -> Type -> Type) {T_HFunctor : HFunctor T}
       `{M_IterativeMonadT : WF_IterativeMonadT T}:= {
   T_HFunctorLaws :> HFunctorLaws T;
@@ -128,8 +186,11 @@ Class WF_HFunctor (T : (Type -> Type) -> Type -> Type) {T_HFunctor : HFunctor T}
 
 Import Monads.
 
+
+(** *** Instances for HFunctors *)
 Section HFunctorInstances.
-  (* State transformer forms a higher-order functor and respects well-formedness
+
+  (** State transformer forms a higher-order functor and respects well-formedness
     laws. *)
   #[global] Instance stateT_HFunctor {S} : HFunctor (stateT S) :=
   {| ffmap := fun A B g _ f x s => fmap (fun '(s', a) => (s', f a)) (x s);
@@ -144,6 +205,7 @@ Section HFunctorInstances.
                   (stateT_WF_IterativeMonadT inh_S).
   Proof.
     constructor.
+    - intros. cbn. intros; subst; eapply reflexivity.
     - intros. cbn. intros; subst; eapply reflexivity.
     - intros; constructor; intros; cbn in *; cycle 1.
       { repeat intro. destruct F_Nat. intros; subst.
@@ -162,6 +224,7 @@ Section HFunctorInstances.
       eapply H. cbn in H0.
       eapply Proper_eqmR_mono; eauto.
       repeat intro. repeat inv H2 ;eauto.
+    - repeat intro. cbn. eapply f_Proper. eauto.
   Qed.
 
   Definition prod_sum_dist_rel {A B C} : relationH (A * B + A * C) (A * (B + C)) :=
@@ -257,7 +320,7 @@ Section HFunctorInstances.
         all : done. }
   Qed.
 
-  (* Error transformer forms a higher-order functor and respects well-formedness
+  (** Error transformer forms a higher-order functor and respects well-formedness
     laws. *)
   #[global] Instance errorT_HFunctor {exn} : HFunctor (errorT exn) :=
   {| ffmap := fun A B g _ f x =>
@@ -272,6 +335,7 @@ Section HFunctorInstances.
   #[global] Instance errorT_HFunctorLaws {exn} : HFunctorLaws (errorT exn).
   Proof.
     constructor.
+    - intros. cbn. reflexivity.
     - intros. cbn. reflexivity.
     - constructor; intros; cbn in *;cycle 1.
       { destruct F_Nat. intros; subst. repeat intro.
@@ -293,11 +357,12 @@ Section HFunctorInstances.
         eapply MM_morph_proper; eauto. }
       { destruct F_Nat. repeat intro. cbn. eapply morph_proper; eauto. }
       constructor; typeclasses eauto.
-    - repeat intro. cbn.
+   - repeat intro. cbn.
       eapply Proper_eqmR. rewrite sum_rel_eq. reflexivity.
       cbn in H0. eapply H.
       eapply Proper_eqmR_mono; eauto.
       repeat intro. repeat inv H1; eauto.
+    - repeat intro. cbn. eapply f_Proper. eauto.
   Qed.
 
   #[global] Instance errorT_HFunctorLawsExt {exn} :
@@ -345,6 +410,8 @@ Section HFunctorInstances.
         erewrite MM_morph_bind; try solve [ done | reflexivity ]. } }
   Qed.
 
+  (** ID transformer forms a higher-order functor and respects well-formedness
+    laws. *)
   #[global] Instance MonadT_ID : MonadT (fun x : Type -> Type => x).
   econstructor; eauto.
   intros. repeat red. eauto.
@@ -365,7 +432,8 @@ Section HFunctorInstances.
   #[global] Program Instance ID_WF_HFunctor : WF_HFunctor (fun x : Type -> Type => x).
   Next Obligation.
     econstructor; try typeclasses eauto; repeat intro; eauto; cbn.
-    reflexivity.
+    reflexivity. reflexivity.
+    repeat intro. cbn. eapply f_Proper. eauto.
   Qed.
   Next Obligation.
     econstructor; try typeclasses eauto; repeat intro; eauto; cbn.
@@ -756,8 +824,8 @@ Section HFunctorInstances.
 
 End HFunctorInstances.
 
-(** *Nesting HFunctors *)
-(* HFunctors compose(nest) to make a HFunctor, and also the well-formedness
+(** ** Nesting HFunctors *)
+(** HFunctors compose(nest) to make a HFunctor, and also the well-formedness
   properties are closed under nesting as well. *)
 Section ComposeHFunctors.
 
@@ -777,9 +845,18 @@ Section ComposeHFunctors.
     econstructor; constructor; intros.
     - cbn. etransitivity. eapply @hfmap_proper; try typeclasses eauto.
       repeat intro; eauto. Unshelve. 4 : exact (fun _ X => X).
-      cbn. etransitivity. eapply morph_proper; eauto.
-      eapply hfmap_id; eauto. reflexivity.
+      cbn. eapply Proper_eqmR_cong.
+      eapply hfmap_id; eauto. reflexivity. auto. reflexivity.
       eapply hfmap_id; eauto. typeclasses eauto.
+    - cbn. etransitivity. eapply @hfmap_proper; try typeclasses eauto.
+      repeat intro; eauto.
+      cbn. eapply Proper_eqmR_cong.
+      eapply hfmap_comp; eauto. reflexivity.
+      eapply hfmap_morph_proper; try eauto.
+      eapply hfmap_morph_proper; try eauto. reflexivity.
+      eapply hfmap_comp; eauto. all : try typeclasses eauto.
+      eapply hfmap_morph_proper; try eauto.
+      eapply hfmap_morph_proper; try eauto.
     - cbn; constructor; try typeclasses eauto; repeat intro.
       + cbn.
         destruct H.
@@ -800,6 +877,8 @@ Section ComposeHFunctors.
       eapply (@hfmap_proper S); try typeclasses eauto.
       repeat intro.
       eapply (@hfmap_proper T); try typeclasses eauto; repeat intro; eauto. eauto.
+    - repeat intro. cbn. eapply hfmap_morph_proper; try typeclasses eauto; eauto.
+      repeat intro. cbn. eapply hfmap_morph_proper; try typeclasses eauto; eauto.
     - cbn -[lift].
       etransitivity.
       eapply (@hfmap_lift S); try typeclasses eauto.
@@ -815,12 +894,6 @@ Section ComposeHFunctors.
       destruct H0. destruct T_HFunctorLawsExtra0. eapply hfmap_iter0; typeclasses eauto.
       eauto. reflexivity.
       Unshelve.
-      destruct H0. destruct T_HFunctorLaws0.
-      pose proof (hfmap_nat0 g g _ _ _ _ _ _ (fun _ x => x)).
-      edestruct H0; eauto.
-      econstructor; repeat intro; cbn; eauto.
-      eapply eqmR_ret; try typeclasses eauto; eauto.
-      eapply eqmR_bind_ProperH; try typeclasses eauto; eauto.
   Defined.
 
 End ComposeHFunctors.
