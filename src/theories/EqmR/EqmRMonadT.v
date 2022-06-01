@@ -1,23 +1,26 @@
-(* We are interested in various equational theories of monads, and also how they
-   interplay with each other. There are two motivations for this : one is the
-   existence of multiple valid equational theories for a particular monad (or a
-   family of monads, such as the state monad that can be parameterized with a
-   state). The second is the curious, but useful existence of monad transformers
-    -- curious, because they tend to be rather awkward to formalize
-   categorically, and also since they derive the question: what does it mean to
-   transform an equational theory of one monad to another? Another point is that
-   it is not immediately clear that there are valid monad transformers that
-   preserves equational theories, since categorically the distributive law does
-   not hold for any pair of arbitrary monads.
+(** *Relational reasoning over monad transformers *)
 
-   Let's start with the notion of a monad transformer being "a natural
-   transformation between two monads as functors that commutes with the two
-   monads’ unit (return) and bind (>>=) operations" [1] and see if we can
-   define a lifting of the theories that correspond to a natural transformation.
+(* We are interested in various equational theories of monads, and also how they
+   interplay with each other.
+
+   What does it mean to transform an equational theory of one monad to another
+   using a monad transformer?
+
+   We use a notion of a monad transformer being "a natural transformation between
+   two monads as functors that commutes with the two monads’ unit (return) and
+   bind (>>=) operations" [1] and define a lifting of the theories that correspond
+   to a natural transformation. More specifically, the [lift] operation on a
+   monad transformation must be a monad morphism which preserves well-formedness
+   conditions for [eqmR].
 
     [1] http://conway.rutgers.edu/~ccshan/wiki/blog/posts/Monad_transformers/
- *)
 
+    This file also defines iterative monads, iterative monad transformers, and the
+    composition of iterative monads. This is important for interpretation, because
+    interpretable moands are iterative monads (i.e. they are monads that respect
+    iterative laws). *)
+
+(* begin hide *)
 From Coq Require Import
      Morphisms.
 
@@ -41,9 +44,10 @@ Import RelNotations.
 Local Open Scope cat_scope.
 Local Open Scope monad_scope.
 Local Open Scope relationH_scope.
+(* end hide *)
 
 (* Definition of a monad morphism from monad [M] to monad [N] parameterized by
-   EqmR definition *)
+   [EqmR] definition. *)
 Section MonadMorphism.
 
   Context (M : Type -> Type) (MT : Type -> Type).
@@ -77,8 +81,7 @@ Section MonadMorphism.
       (forall (i : I), eqmR (m := MT) eq (morph _ (t i)) (t' i)) ->
       eqmR (m := MT) (@eq R) (morph _ (Basics.iter t i)) (Basics.iter t' i).
 
-  Class MonadMorphism :=
-    {
+  Class MonadMorphism := {
       MM_EQM :> EQM MT EqmRN;
       MM_morph_ret :> MorphRet;
       MM_morph_bind :> MorphBind;
@@ -117,6 +120,7 @@ End EqmRMonadTransformer.
 
 Arguments lift / {_ _ _ _} [A].
 
+(* Monad transformers compose to make a monad transformer. *)
 #[global] Instance compose_MonadT (S T : (Type -> Type) -> Type -> Type)
  {S_MonadT : MonadT S} {T_MonadT : MonadT T} : MonadT (fun x => S (T x)).
 Proof.
@@ -124,6 +128,8 @@ Proof.
   - exact (lift (T := S) (lift (T := T) X)).
 Defined.
 
+(* Iterative monads are monads have an [iter] operator which satisfies iterative
+   laws for the equational theory that they carry . *)
 Class IterativeMonad (M : Type -> Type) := {
   IM_Monad :> Monad M;
   M_EqmR :> EqmR M;
@@ -134,6 +140,7 @@ Class WF_IterativeMonad (M : Type -> Type) (IM_Monad : Monad M) (M_EqmR : EqmR M
   M_Iterative :> Iterative (Kleisli M) sum;
   M_ProperIter :> @ProperIterH M _ _;}.
 
+(* Iterative monad transformers lift iterative monads into iterative monads. *)
 Class IterativeMonadT (T : (Type -> Type) -> Type -> Type) := {
   T_MonadT :> MonadT T;
   T_MonadIter :> forall (m : Type -> Type), Monad m -> MonadIter m -> MonadIter (T m);}.
@@ -141,6 +148,7 @@ Class IterativeMonadT (T : (Type -> Type) -> Type -> Type) := {
 Global Hint Mode IterativeMonadT ! : typeclasses_instances.
 Global Hint Mode T_MonadIter ! ! ! ! ! : typeclasses_instances.
 
+(* Iterative monad transformers compose to make a iterative monad transformer. *)
 #[global] Instance compose_IterativeMonadT {S T : (Type -> Type) -> Type -> Type} `{IterativeMonadT S} `{IterativeMonadT T}:
   IterativeMonadT ((fun x => S (T x))).
 Proof.
@@ -160,6 +168,8 @@ Class WF_IterativeMonadT (T : (Type -> Type) -> Type -> Type) (T_MonadT : MonadT
 
 Global Hint Mode WF_IterativeMonadT ! ! ! : typeclasses_instances.
 
+(* The well-formedness condition for iterative monad transformers are preserved
+  under composition. *)
 #[global] Instance compose_WF_IterativeMonadT {S T : (Type -> Type) -> Type -> Type}
  `{WF_IterativeMonadT S} `{WF_IterativeMonadT T}:
   WF_IterativeMonadT ((fun x => S (T x))) _ _.

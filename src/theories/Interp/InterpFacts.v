@@ -40,7 +40,6 @@ From ITree.EqmR Require Import
 From ExtLib Require Import
      Structures.Functor
      Structures.Monad.
-(* end hide *)
 
 Set Primitive Projections.
 
@@ -51,6 +50,7 @@ Import CatNotations.
 Local Open Scope relationH_scope.
 Local Open Scope cat_scope.
 Local Open Scope monad_scope.
+(* end hide *)
 
 Section interp_laws.
 

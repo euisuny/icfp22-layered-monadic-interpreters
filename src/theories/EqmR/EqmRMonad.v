@@ -1,5 +1,19 @@
 (** * EqmR Monad laws and associated typeclasses *)
 
+(* This file contains an equational axiomatization of the monadic structures that
+   arise from the construction of layered monadic interpreters.
+
+   The base theory, [EqmR] is a framework for relational reasoning over monads.
+   They are a generalization of the ITree equational theory on [eutt], and have
+   a notion of [image] of a computation which capture the set of values possibly
+   returned by a monadic computation.
+
+   The well-formedness conditions capture standard monad laws.
+   Roughly, they also characterize forming a bicartesian closed category (a
+    cartesian closed category with finite coproducts).
+   The laws also characterize inversion properties which consume relations over
+   monads. *)
+
 (* begin hide *)
 From Coq Require Import
      Morphisms
@@ -653,7 +667,6 @@ Section Image.
     } destruct MAP. auto.
   Qed.
 
-  
 End Image.
 
 Notation "a1 ∈ ma" := (mayRet _ ma a1) (at level 40) : cat_scope.
@@ -791,8 +804,7 @@ Section EqmRInversion.
         (f1 <$> ma1) ≈{ R } (f2 <$> ma2) ->
         ma1 ≈{ fun a1 a2 => R (f1 a1) (f2 a2)} ma2.
 
-  (*
-     This is the key lemma that checks whether or not the monad has computations
+  (* This is the key lemma that checks whether or not the monad has computations
      which are impure and has an observable step.
 
      Notably, the state monad does not respect this property (see [bind_ret_inv_counterexample]
@@ -883,7 +895,6 @@ Section Comp.
   Proof.
     intros; unfold mayRet. apply ret_image. split; eauto.
   Qed.
-
 
   (* Under these well-formedness conditions of EqmR, eqmR eq and
     eqmR (image ma) coincides.*)

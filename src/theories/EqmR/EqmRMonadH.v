@@ -1,5 +1,14 @@
-(** * Monad laws and associated typeclasses *)
+(** * Relations over different monads *)
+(* In many practical situations, such as when expressing the correctness of a
+  pass of compilation from distinct source and target languages, we need to state
+  a relation over distinct monads.
 
+  We provide a more general notion of family of relations that are parameterized
+  by two monads, and lifts relations at return types. Each monad comes with its
+  own relational theory, and this "hetergeneous" [eqmR] respects the relational
+  theory for each monad. *)
+
+(* begin hide *)
 From Coq Require Import
      Morphisms
      Program.
@@ -21,6 +30,7 @@ Import CatNotations.
 Import MonadNotation.
 Local Open Scope monad_scope.
 Local Open Scope cat_scope.
+(* end hide *)
 
 Section EqmRH.
 
@@ -29,10 +39,8 @@ Section EqmRH.
     eqmRH : forall {A B : Type} (R : relationH A B), relationH (m A) (m' B);
     }.
 
-  (*
-    The more traditional notion of monadic equivalence is recovered at the
-    equality relation [forall A,  m A -> m A -> Prop]
-   *)
+  (* The more traditional notion of monadic equivalence is recovered at the
+    equality relation [forall A,  m A -> m A -> Prop] *)
   Definition eqmH {m m': Type -> Type} `{@EqmRH m m'} {A: Type} := @eqmRH m m'.
 
 End EqmRH.
@@ -57,16 +65,16 @@ Section EqmRH_WF.
           Proper (eqmR (m := m) eq ==> eqmR (m := m') eq ==> iff) (eqmRH R).
 
 End EqmRH_WF.
-
 Arguments Proper_EqmRH {_ _} _ {_ _}.
 Arguments proper_eqmRH {_ _ _ _ _ _} [_ _].
+
 Section EqmRRelH.
   Context (m m': Type -> Type).
   Context {m_EqmRH: EqmRH m m'}.
   Context {m_EqmR: EqmR m}.
   Context {m'_EqmR : EqmR m'}.
 
-  (* Requirements of well-formedness of [eqmR] *)
+  (* Requirements of well-formedness of [eqmRH] *)
   Class EqmRH_OK : Type :=
     {
       eqmRH_transport_Zigzag :
@@ -325,6 +333,7 @@ Section EqmRHMonad.
 
 End EqmRHMonad.
 
+(* We can derive a diagonal [eqmRH] from a [eqmR] *)
 #[global] Instance EqmRMonad_EqmRMonadH
  {m} {m_EqmR : EqmR m} {m_Monad : Monad m}
  {m_EqmR_OK : EqmR_OK m} {m_EqmRMonad : EqmRMonadLaws m} : EqmRHMonadLaws m m.
