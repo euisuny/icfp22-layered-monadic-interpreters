@@ -15,6 +15,8 @@ The following are necessary dependencies for the code base.
 
 - coq 8.15
 - coq-paco 4.1.2
+- coq-ext-lib 0.11.6
+
 
 These packages can be installed via `opam`.
 
@@ -23,6 +25,7 @@ These packages can be installed via `opam`.
  opam repo add coq-released https://coq.inria.fr/opam/released
  opam pin coq 8.15.0
  opam install coq-paco
+ opam install coq-ext-lib
 ```
 
 ### Compilation Instructions
