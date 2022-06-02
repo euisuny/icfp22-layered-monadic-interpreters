@@ -405,40 +405,26 @@ We consider heterogeneous relations on computations parameterized by a
 </div>
 
 <div class="doc">
-<a id="lab56"></a><h1 class="section">An <i>image</i> is a (unary) logical predicate that specifies the intersection</h1>
+An <i>image</i> is a (unary) logical predicate that specifies the intersection
+   of PER's that a monadic value satisfies. Intuitively, what this entails is
+   the possible set of elements of the specified Type <span class="inlinecode"><span class="id" title="var">A</span></span> that a monadic
+   value can return. In this sense, it is an "image" as in set theory,
+   indicating the set of all output values that a monad may produce.
+   Notice the definition of <i>image</i> takes the universal quantification over
+   all PER's satisfying <span class="inlinecode"><span class="id" title="var">EQ</span></span>, giving the smallest relation which will
+   describe the set of elements that a monadic value may return.
+    Consider <span class="inlinecode"><a class="idref" href="ITree.EqmR.EqmRMonadH.html#image"><span class="id" title="definition">image</span></a></span> <span class="inlinecode"><a class="idref" href="ITree.Core.ITreeDefinition.html#ITree.spin"><span class="id" title="definition">spin</span></a></span> in ITrees, or more simply, <span class="inlinecode"><a class="idref" href="ITree.EqmR.EqmRMonadH.html#image"><span class="id" title="definition">image</span></a></span> <span class="inlinecode"><span class="id" title="var">Nothing</span></span> for the
+   option monad, where the carrier Typee is <span class="inlinecode"><span class="id" title="var">A</span></span>.
 
-<a id="lab57"></a><h1 class="section">of PER's that a monadic value satisfies. Intuitively, what this entails is</h1>
+<div class="paragraph"> </div>
 
-<a id="lab58"></a><h1 class="section">the possible set of elements of the specified Type <span class="inlinecode"><span class="id" title="var">A</span></span> that a monadic</h1>
-
-<a id="lab59"></a><h1 class="section">value can return. In this sense, it is an "image" as in set theory,</h1>
-
-<a id="lab60"></a><h1 class="section">indicating the set of all output values that a monad may produce.</h1>
-
-   *
-<a id="lab61"></a><h1 class="section">Notice the definition of <i>image</i> takes the universal quantification over</h1>
-
-<a id="lab62"></a><h1 class="section">all PER's satisfying <span class="inlinecode"><span class="id" title="var">EQ</span></span>, giving the smallest relation which will</h1>
-
-<a id="lab63"></a><h1 class="section">describe the set of elements that a monadic value may return.</h1>
-
-   *
-<a id="lab64"></a><h1 class="section">Consider <span class="inlinecode"><a class="idref" href="ITree.EqmR.EqmRMonadH.html#image"><span class="id" title="definition">image</span></a></span> <span class="inlinecode"><a class="idref" href="ITree.Core.ITreeDefinition.html#ITree.spin"><span class="id" title="definition">spin</span></a></span> in ITrees, or more simply, <span class="inlinecode"><a class="idref" href="ITree.EqmR.EqmRMonadH.html#image"><span class="id" title="definition">image</span></a></span> <span class="inlinecode"><span class="id" title="var">Nothing</span></span> for the</h1>
-
-<a id="lab65"></a><h1 class="section">option monad, where the carrier Typee is <span class="inlinecode"><span class="id" title="var">A</span></span>.</h1>
-
-   *
-<a id="lab66"></a><h1 class="section">There exists no PER over any carrier Type that this option monad may have</h1>
-
-<a id="lab67"></a><h1 class="section">in which <span class="inlinecode"><span class="id" title="var">Nothing</span></span> can give an image to, i.e. the smallest relation over</h1>
-
-<a id="lab68"></a><h1 class="section"><span class="inlinecode"><span class="id" title="var">Nothing</span></span> cannot say anything about values of Type <span class="inlinecode"><span class="id" title="var">A</span></span>.</h1>
-
-   
+   There exists no PER over any carrier Type that this option monad may have
+   in which <span class="inlinecode"><span class="id" title="var">Nothing</span></span> can give an image to, i.e. the smallest relation over
+   <span class="inlinecode"><span class="id" title="var">Nothing</span></span> cannot say anything about values of Type <span class="inlinecode"><span class="id" title="var">A</span></span>.
+    Elements contained in the least specification that relates two monadic
+     computations. 
 </div>
 <div class="code">
-&nbsp;&nbsp;<span class="comment">(*&nbsp;Elements&nbsp;contained&nbsp;in&nbsp;the&nbsp;least&nbsp;specification&nbsp;that&nbsp;relates&nbsp;two&nbsp;monadic<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;computations.&nbsp;*)</span><br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="imageH" class="idref" href="#imageH"><span class="id" title="definition">imageH</span></a> {<a id="A1:177" class="idref" href="#A1:177"><span class="id" title="binder">A1</span></a> <a id="A2:178" class="idref" href="#A2:178"><span class="id" title="binder">A2</span></a> :<span class="id" title="keyword">Type</span>} (<a id="ma1:179" class="idref" href="#ma1:179"><span class="id" title="binder">ma1</span></a> : <a class="idref" href="ITree.EqmR.EqmRMonad.html#Image.m"><span class="id" title="variable">m</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#A1:177"><span class="id" title="variable">A1</span></a>) (<a id="ma2:180" class="idref" href="#ma2:180"><span class="id" title="binder">ma2</span></a> : <a class="idref" href="ITree.EqmR.EqmRMonad.html#Image.m"><span class="id" title="variable">m</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#A2:178"><span class="id" title="variable">A2</span></a>) : <a class="idref" href="ITree.Basics.HeterogeneousRelations.html#relationH"><span class="id" title="definition">relationH</span></a> (<a class="idref" href="ITree.EqmR.EqmRMonad.html#A1:177"><span class="id" title="variable">A1</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.15.0/stdlib//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">*</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#A2:178"><span class="id" title="variable">A2</span></a>) (<a class="idref" href="ITree.EqmR.EqmRMonad.html#A1:177"><span class="id" title="variable">A1</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.15.0/stdlib//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">*</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#A2:178"><span class="id" title="variable">A2</span></a>) :=<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">fun</span> '<a id="pat:183" class="idref" href="#pat:183"><span class="id" title="binder">(</span></a><a id="pat:183" class="idref" href="#pat:183"><span class="id" title="binder">a1</span></a><a id="pat:183" class="idref" href="#pat:183"><span class="id" title="binder">,</span></a> <a id="pat:183" class="idref" href="#pat:183"><span class="id" title="binder">a2</span></a><a id="pat:183" class="idref" href="#pat:183"><span class="id" title="binder">)</span></a> '<a id="pat:186" class="idref" href="#pat:186"><span class="id" title="binder">(</span></a><a id="pat:186" class="idref" href="#pat:186"><span class="id" title="binder">a1'</span></a><a id="pat:186" class="idref" href="#pat:186"><span class="id" title="binder">,</span></a> <a id="pat:186" class="idref" href="#pat:186"><span class="id" title="binder">a2'</span></a><a id="pat:186" class="idref" href="#pat:186"><span class="id" title="binder">)</span></a> =&gt;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<a id="RA:187" class="idref" href="#RA:187"><span class="id" title="binder">RA</span></a> : <a class="idref" href="ITree.Basics.HeterogeneousRelations.html#relationH"><span class="id" title="definition">relationH</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#A1:177"><span class="id" title="variable">A1</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#A2:178"><span class="id" title="variable">A2</span></a>)<br/>
