@@ -27,8 +27,19 @@ These packages can be installed via `opam`.
 
 ### Compilation Instructions
 
+#### Building the Metatheory
 The project can be built by running `make` in this directory.
 ```
   cd src; make
 ```
 In order to build the case study, run `make` in each of the subdirectories, 
+
+#### Building the case study
+The case study can be built by running `make` in the respective directories.
+```
+  cd tutorial; make
+```
+or
+```
+  cd tutorial_commute; make
+```
