@@ -329,25 +329,22 @@ Section Image.
   Context {Mm : Monad m}.
   Context {EqMR : EqmR m} {EqmROKm : EqmR_OK m}.
 
-  (**
-   * An _image_ is a (unary) logical predicate that specifies the intersection
-   * of PER's that a monadic value satisfies. Intuitively, what this entails is
-   * the possible set of elements of the specified Type [A] that a monadic
-   * value can return. In this sense, it is an "image" as in set theory,
-   * indicating the set of all output values that a monad may produce.
-   *
-   * Notice the definition of _image_ takes the universal quantification over
-   * all PER's satisfying [EQ], giving the smallest relation which will
-   * describe the set of elements that a monadic value may return.
-   *
-   * Consider [image spin] in ITrees, or more simply, [image Nothing] for the
-   * option monad, where the carrier Typee is [A].
-   *
-   * There exists no PER over any carrier Type that this option monad may have
-   * in which [Nothing] can give an image to, i.e. the smallest relation over
-   * [Nothing] cannot say anything about values of Type [A].
+  (** An _image_ is a (unary) logical predicate that specifies the intersection
+   of PER's that a monadic value satisfies. Intuitively, what this entails is
+   the possible set of elements of the specified Type [A] that a monadic
+   value can return. In this sense, it is an "image" as in set theory,
+   indicating the set of all output values that a monad may produce.
+   Notice the definition of _image_ takes the universal quantification over
+   all PER's satisfying [EQ], giving the smallest relation which will
+   describe the set of elements that a monadic value may return.
+    Consider [image spin] in ITrees, or more simply, [image Nothing] for the
+   option monad, where the carrier Typee is [A].
+
+   There exists no PER over any carrier Type that this option monad may have
+   in which [Nothing] can give an image to, i.e. the smallest relation over
+   [Nothing] cannot say anything about values of Type [A].
    *)
-  (* Elements contained in the least specification that relates two monadic
+  (** Elements contained in the least specification that relates two monadic
      computations. *)
   Definition imageH {A1 A2 :Type} (ma1 : m A1) (ma2 : m A2) : relationH (A1 * A2) (A1 * A2) :=
     fun '(a1, a2) '(a1', a2') =>

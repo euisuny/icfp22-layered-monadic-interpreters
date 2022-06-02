@@ -752,13 +752,13 @@ Class SubeventRewrite {A C E} (Sub : A +? C -< E) {Sub_wf : Subevent_wf Sub} :=
     split_merge : forall (T : Type) (a : (A +' C) T), split_E Sub (merge_E Sub a) = a
   }.
 
-Global Instance SubeventRewriteInstances {A C E} {Sub : A +? C -< E} {Sub_wf : Subevent_wf Sub} :
+#[global] Instance SubeventRewriteInstances {A C E} {Sub : A +? C -< E} {Sub_wf : Subevent_wf Sub} :
   SubeventRewrite Sub.
 Proof.
   destruct Sub_wf.
-  destruct sub_iso. red in iso_mono, iso_epi.
+  edestruct @sub_iso. typeclasses eauto. red in iso_mono, iso_epi.
   cbn in *. unfold eq2, Eq2_IFun, Relation.i_pointwise in *.
-  constructor; eauto.
+  constructor; eauto. Unshelve. all : eauto.
 Qed.
 
 Module SubeventRewr.
@@ -1028,18 +1028,18 @@ Section Correctness.
           specialize (HProper2 _ _ HProper1).
           cbn -[interp bind] in *.
           do 2 setoid_rewrite prod_rel_eq in HProper2. rewrite HProper2.
-          clear HProper2 HProper1 HProper Hbind HProper0. 2, 3 : eauto.
+          all : clear HProper2 HProper1 HProper Hbind HProper0. 1, 2 : eauto.
 
           ibind. iproper.
           specialize (HProper0 _ _ Hbind).
           cbn -[interp bind] in *.
           do 2 setoid_rewrite prod_rel_eq in HProper0. rewrite HProper0.
-          clear HProper HProper0 Hbind. 2, 3 : eauto.
+          all : clear HProper HProper0 Hbind. 1, 2 : eauto.
 
           ibind. iproper.
           cbn -[interp bind] in *.
           do 2 setoid_rewrite prod_rel_eq in Hbind. rewrite Hbind.
-          2, 3 : eauto. clear Hbind HProper. reflexivity. }
+          1, 2 : eauto. clear Hbind HProper. reflexivity. }
 
 
         clear Hbind HProper HProper0.
@@ -1113,18 +1113,18 @@ Section Correctness.
           specialize (HProper2 _ _ HProper1).
           cbn -[interp bind] in *.
           do 2 setoid_rewrite prod_rel_eq in HProper2. rewrite HProper2.
-          clear HProper2 HProper1 HProper Hbind HProper0. 2, 3 : eauto.
+          all : clear HProper2 HProper1 HProper Hbind HProper0. 1, 2 : eauto.
 
           ibind. iproper.
           specialize (HProper0 _ _ Hbind).
           cbn -[interp bind] in *.
           do 2 setoid_rewrite prod_rel_eq in HProper0. rewrite HProper0.
-          clear HProper HProper0 Hbind. 2, 3 : eauto.
+          all : clear HProper HProper0 Hbind. 1, 2 : eauto.
 
           ibind. iproper.
           cbn -[interp bind] in *.
           do 2 setoid_rewrite prod_rel_eq in Hbind. rewrite Hbind.
-          2, 3 : eauto. clear Hbind HProper. reflexivity. }
+          1, 2 : eauto. clear Hbind HProper. reflexivity. }
 
 
         clear Hbind HProper HProper0.
@@ -1198,18 +1198,18 @@ Section Correctness.
           specialize (HProper2 _ _ HProper1).
           cbn -[interp bind] in *.
           do 2 setoid_rewrite prod_rel_eq in HProper2. rewrite HProper2.
-          clear HProper2 HProper1 HProper Hbind HProper0. 2, 3 : eauto.
+          all : clear HProper2 HProper1 HProper Hbind HProper0. 1, 2 : eauto.
 
           ibind. iproper.
           specialize (HProper0 _ _ Hbind).
           cbn -[interp bind] in *.
           do 2 setoid_rewrite prod_rel_eq in HProper0. rewrite HProper0.
-          clear HProper HProper0 Hbind. 2, 3 : eauto.
+          all : clear HProper HProper0 Hbind. 1, 2 : eauto.
 
           ibind. iproper.
           cbn -[interp bind] in *.
           do 2 setoid_rewrite prod_rel_eq in Hbind. rewrite Hbind.
-          2, 3 : eauto. clear Hbind HProper. reflexivity. }
+          1, 2 : eauto. clear Hbind HProper. reflexivity. }
 
         clear Hbind HProper HProper0.
         (* The Induction hypothesis on [e2] relates the second itrees *)
@@ -1493,7 +1493,7 @@ Section Correctness.
       cbn -[interp_asm] in H0.
       do 2 setoid_rewrite prod_rel_eq in H0.
       setoid_rewrite sum_rel_eq in H0. rewrite H0; eauto. cbn -[interp_asm interp_imp].
-      rewrite H0. rewrite Eq.bind_bind.
+      rewrite H0. all : try eauto. rewrite Eq.bind_bind.
       rename H2 into HSIM.
 
       cbn -[interp_imp] in H1.
@@ -1520,9 +1520,9 @@ Section Correctness.
 
       + (* In the true case, we line up the body of the loop to use the induction hypothesis *)
         Opaque compile.
-        rewrite H0.
+        rewrite H0. all : try eauto.
         rewrite !Eq.bind_bind.
-        repeat rewrite H1.
+        repeat rewrite H1. all : eauto.
         rewrite !Eq.bind_bind. all : eauto.
 
         cbn -[interp_asm interp_imp].
