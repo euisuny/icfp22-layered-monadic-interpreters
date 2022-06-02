@@ -29,6 +29,6 @@ These packages can be installed via `opam`.
 
 The project can be built by running `make` in this directory.
 ```
-  cd src; make coq
+  cd src; make
 ```
 In order to build the case study, run `make` in each of the subdirectories, 
