@@ -31,30 +31,39 @@
 </div>
 
 <div class="doc">
-*Relational reasoning over monad transformers 
+<a id="lab74"></a><h1 class="section">Relational reasoning over monad transformers</h1>
+
+<div class="paragraph"> </div>
+
+ We are interested in various equational theories of monads, and also how they
+   interplay with each other.
+
+<div class="paragraph"> </div>
+
+   What does it mean to transform an equational theory of one monad to another
+   using a monad transformer?
+
+<div class="paragraph"> </div>
+
+   We use a notion of a monad transformer being "a natural transformation between
+   two monads as functors that commutes with the two monads’ unit (return) and
+   bind (&gt;&gt;=) operations" <span class="inlinecode">1</span> and define a lifting of the theories that correspond
+   to a natural transformation. More specifically, the <span class="inlinecode"><a class="idref" href="ITree.EqmR.EqmRMonadT.html#lift"><span class="id" title="projection">lift</span></a></span> operation on a
+   monad transformation must be a monad morphism which preserves well-formedness
+   conditions for <span class="inlinecode"><a class="idref" href="ITree.EqmR.EqmRMonad.html#eqmR"><span class="id" title="projection">eqmR</span></a></span>.
+
+<div class="paragraph"> </div>
+
+    <span class="inlinecode">1</span> http://conway.rutgers.edu/~ccshan/wiki/blog/posts/Monad_transformers/
+
+<div class="paragraph"> </div>
+
+    This file also defines iterative monads, iterative monad transformers, and the
+    composition of iterative monads. This is important for interpretation, because
+    interpretable moands are iterative monads (i.e. they are monads that respect
+    iterative laws). 
 </div>
 <div class="code">
-
-<br/>
-<span class="comment">(*&nbsp;We&nbsp;are&nbsp;interested&nbsp;in&nbsp;various&nbsp;equational&nbsp;theories&nbsp;of&nbsp;monads,&nbsp;and&nbsp;also&nbsp;how&nbsp;they<br/>
-&nbsp;&nbsp;&nbsp;interplay&nbsp;with&nbsp;each&nbsp;other.<br/>
-<br/>
-&nbsp;&nbsp;&nbsp;What&nbsp;does&nbsp;it&nbsp;mean&nbsp;to&nbsp;transform&nbsp;an&nbsp;equational&nbsp;theory&nbsp;of&nbsp;one&nbsp;monad&nbsp;to&nbsp;another<br/>
-&nbsp;&nbsp;&nbsp;using&nbsp;a&nbsp;monad&nbsp;transformer?<br/>
-<br/>
-&nbsp;&nbsp;&nbsp;We&nbsp;use&nbsp;a&nbsp;notion&nbsp;of&nbsp;a&nbsp;monad&nbsp;transformer&nbsp;being&nbsp;"a&nbsp;natural&nbsp;transformation&nbsp;between<br/>
-&nbsp;&nbsp;&nbsp;two&nbsp;monads&nbsp;as&nbsp;functors&nbsp;that&nbsp;commutes&nbsp;with&nbsp;the&nbsp;two&nbsp;monads’&nbsp;unit&nbsp;(return)&nbsp;and<br/>
-&nbsp;&nbsp;&nbsp;bind&nbsp;(&gt;&gt;=)&nbsp;operations"&nbsp;<span class="inlinecode">1</span>&nbsp;and&nbsp;define&nbsp;a&nbsp;lifting&nbsp;of&nbsp;the&nbsp;theories&nbsp;that&nbsp;correspond<br/>
-&nbsp;&nbsp;&nbsp;to&nbsp;a&nbsp;natural&nbsp;transformation.&nbsp;More&nbsp;specifically,&nbsp;the&nbsp;<span class="inlinecode"><span class="id" title="var">lift</span></span>&nbsp;operation&nbsp;on&nbsp;a<br/>
-&nbsp;&nbsp;&nbsp;monad&nbsp;transformation&nbsp;must&nbsp;be&nbsp;a&nbsp;monad&nbsp;morphism&nbsp;which&nbsp;preserves&nbsp;well-formedness<br/>
-&nbsp;&nbsp;&nbsp;conditions&nbsp;for&nbsp;<span class="inlinecode"><span class="id" title="var">eqmR</span></span>.<br/>
-<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="inlinecode">1</span>&nbsp;http://conway.rutgers.edu/~ccshan/wiki/blog/posts/Monad_transformers/<br/>
-<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;file&nbsp;also&nbsp;defines&nbsp;iterative&nbsp;monads,&nbsp;iterative&nbsp;monad&nbsp;transformers,&nbsp;and&nbsp;the<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;composition&nbsp;of&nbsp;iterative&nbsp;monads.&nbsp;This&nbsp;is&nbsp;important&nbsp;for&nbsp;interpretation,&nbsp;because<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;interpretable&nbsp;moands&nbsp;are&nbsp;iterative&nbsp;monads&nbsp;(i.e.&nbsp;they&nbsp;are&nbsp;monads&nbsp;that&nbsp;respect<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;iterative&nbsp;laws).&nbsp;*)</span><br/>
 
 <br/>
 

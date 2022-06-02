@@ -1,4 +1,4 @@
-(** *Reasoning principles for interpretable layered monads *)
+(** * Reasoning principles for interpretable layered monads *)
 
 (* When we layer the [interp] combinator, we also intend certain structural
   properties to hold at each layer of interpretation. Most importantly,

@@ -1,6 +1,6 @@
-(** *Relational reasoning over monad transformers *)
+(** * Relational reasoning over monad transformers *)
 
-(* We are interested in various equational theories of monads, and also how they
+(** We are interested in various equational theories of monads, and also how they
    interplay with each other.
 
    What does it mean to transform an equational theory of one monad to another

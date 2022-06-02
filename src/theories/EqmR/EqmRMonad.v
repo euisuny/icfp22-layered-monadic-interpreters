@@ -1,6 +1,6 @@
 (** * EqmR Monad laws and associated typeclasses *)
 
-(* This file contains an equational axiomatization of the monadic structures that
+(** This file contains an equational axiomatization of the monadic structures that
    arise from the construction of layered monadic interpreters.
 
    The base theory, [EqmR] is a framework for relational reasoning over monads.
@@ -43,7 +43,7 @@ Local Open Scope cat_scope.
 
 Section EqmR.
 
-  (* We consider heterogeneous relations on computations parameterized by a
+  (** We consider heterogeneous relations on computations parameterized by a
      relation on the return types *)
   Class EqmR (m : Type -> Type) : Type :=
     { eqmR : forall {A B : Type} (R : relationH A B), relationH (m A) (m B) }.
@@ -57,7 +57,7 @@ Arguments eqmR {m _ A B}.
 Import RelNotations.
 Local Open Scope relationH_scope.
 
-(* [EqmR_OK] : Well-formedness properties of EqmR. *)
+(** * [EqmR_OK] : Well-formedness properties of EqmR. *)
 Section EqmRRel.
   Context (m : Type -> Type).
   Context {EqMR : EqmR m} {Mm : Monad m}.
@@ -323,12 +323,13 @@ End PER.
 
 Arguments Proper_eqmR_cong {_ _ _ _} [_ _ _].
 
+(** * Image : the set of possible return values of a monad  *)
 Section Image.
   Context (m : Type -> Type).
   Context {Mm : Monad m}.
   Context {EqMR : EqmR m} {EqmROKm : EqmR_OK m}.
 
-  (*
+  (**
    * An _image_ is a (unary) logical predicate that specifies the intersection
    * of PER's that a monadic value satisfies. Intuitively, what this entails is
    * the possible set of elements of the specified Type [A] that a monadic

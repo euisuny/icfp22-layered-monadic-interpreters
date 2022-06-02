@@ -33,23 +33,27 @@
 <div class="doc">
 <a id="lab53"></a><h1 class="section">EqmR Monad laws and associated typeclasses</h1>
 
+<div class="paragraph"> </div>
+
+ This file contains an equational axiomatization of the monadic structures that
+   arise from the construction of layered monadic interpreters.
+
+<div class="paragraph"> </div>
+
+   The base theory, <span class="inlinecode"><a class="idref" href="ITree.EqmR.EqmRMonad.html#EqmR"><span class="id" title="record">EqmR</span></a></span> is a framework for relational reasoning over monads.
+   They are a generalization of the ITree equational theory on <span class="inlinecode"><a class="idref" href="ITree.Eq.Eq.html#eutt"><span class="id" title="definition">eutt</span></a></span>, and have
+   a notion of <span class="inlinecode"><a class="idref" href="ITree.EqmR.EqmRMonadH.html#image"><span class="id" title="definition">image</span></a></span> of a computation which capture the set of values possibly
+   returned by a monadic computation.
+
+<div class="paragraph"> </div>
+
+   The well-formedness conditions capture standard monad laws.
+   Roughly, they also characterize forming a bicartesian closed category (a
+    cartesian closed category with finite coproducts).
+   The laws also characterize inversion properties which consume relations over
+   monads. 
 </div>
 <div class="code">
-
-<br/>
-<span class="comment">(*&nbsp;This&nbsp;file&nbsp;contains&nbsp;an&nbsp;equational&nbsp;axiomatization&nbsp;of&nbsp;the&nbsp;monadic&nbsp;structures&nbsp;that<br/>
-&nbsp;&nbsp;&nbsp;arise&nbsp;from&nbsp;the&nbsp;construction&nbsp;of&nbsp;layered&nbsp;monadic&nbsp;interpreters.<br/>
-<br/>
-&nbsp;&nbsp;&nbsp;The&nbsp;base&nbsp;theory,&nbsp;<span class="inlinecode"><span class="id" title="var">EqmR</span></span>&nbsp;is&nbsp;a&nbsp;framework&nbsp;for&nbsp;relational&nbsp;reasoning&nbsp;over&nbsp;monads.<br/>
-&nbsp;&nbsp;&nbsp;They&nbsp;are&nbsp;a&nbsp;generalization&nbsp;of&nbsp;the&nbsp;ITree&nbsp;equational&nbsp;theory&nbsp;on&nbsp;<span class="inlinecode"><span class="id" title="var">eutt</span></span>,&nbsp;and&nbsp;have<br/>
-&nbsp;&nbsp;&nbsp;a&nbsp;notion&nbsp;of&nbsp;<span class="inlinecode"><span class="id" title="var">image</span></span>&nbsp;of&nbsp;a&nbsp;computation&nbsp;which&nbsp;capture&nbsp;the&nbsp;set&nbsp;of&nbsp;values&nbsp;possibly<br/>
-&nbsp;&nbsp;&nbsp;returned&nbsp;by&nbsp;a&nbsp;monadic&nbsp;computation.<br/>
-<br/>
-&nbsp;&nbsp;&nbsp;The&nbsp;well-formedness&nbsp;conditions&nbsp;capture&nbsp;standard&nbsp;monad&nbsp;laws.<br/>
-&nbsp;&nbsp;&nbsp;Roughly,&nbsp;they&nbsp;also&nbsp;characterize&nbsp;forming&nbsp;a&nbsp;bicartesian&nbsp;closed&nbsp;category&nbsp;(a<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;cartesian&nbsp;closed&nbsp;category&nbsp;with&nbsp;finite&nbsp;coproducts).<br/>
-&nbsp;&nbsp;&nbsp;The&nbsp;laws&nbsp;also&nbsp;characterize&nbsp;inversion&nbsp;properties&nbsp;which&nbsp;consume&nbsp;relations&nbsp;over<br/>
-&nbsp;&nbsp;&nbsp;monads.&nbsp;*)</span><br/>
 
 <br/>
 
@@ -57,8 +61,13 @@
 <span class="id" title="keyword">Section</span> <a id="EqmR" class="idref" href="#EqmR"><span class="id" title="section">EqmR</span></a>.<br/>
 
 <br/>
-&nbsp;&nbsp;<span class="comment">(*&nbsp;We&nbsp;consider&nbsp;heterogeneous&nbsp;relations&nbsp;on&nbsp;computations&nbsp;parameterized&nbsp;by&nbsp;a<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;relation&nbsp;on&nbsp;the&nbsp;return&nbsp;types&nbsp;*)</span><br/>
+</div>
+
+<div class="doc">
+We consider heterogeneous relations on computations parameterized by a
+     relation on the return types 
+</div>
+<div class="code">
 &nbsp;&nbsp;<span class="id" title="keyword">Class</span> <a id="EqmR" class="idref" href="#EqmR"><span class="id" title="record">EqmR</span></a> (<a id="m:1" class="idref" href="#m:1"><span class="id" title="binder">m</span></a> : <span class="id" title="keyword">Type</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.15.0/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Type</span>) : <span class="id" title="keyword">Type</span> :=<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;{ <a id="eqmR" class="idref" href="#eqmR"><span class="id" title="projection">eqmR</span></a> : <span class="id" title="keyword">forall</span> {<a id="A:3" class="idref" href="#A:3"><span class="id" title="binder">A</span></a> <a id="B:4" class="idref" href="#B:4"><span class="id" title="binder">B</span></a> : <span class="id" title="keyword">Type</span>} (<a id="R:5" class="idref" href="#R:5"><span class="id" title="binder">R</span></a> : <a class="idref" href="ITree.Basics.HeterogeneousRelations.html#relationH"><span class="id" title="definition">relationH</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#A:3"><span class="id" title="variable">A</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#B:4"><span class="id" title="variable">B</span></a>), <a class="idref" href="ITree.Basics.HeterogeneousRelations.html#relationH"><span class="id" title="definition">relationH</span></a> (<a class="idref" href="ITree.EqmR.EqmRMonad.html#m:1"><span class="id" title="variable">m</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#A:3"><span class="id" title="variable">A</span></a>) (<a class="idref" href="ITree.EqmR.EqmRMonad.html#m:1"><span class="id" title="variable">m</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#B:4"><span class="id" title="variable">B</span></a>) }.<br/>
 
@@ -75,7 +84,13 @@
 <span class="id" title="keyword">Local Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">relationH_scope</span>.<br/>
 
 <br/>
-<span class="comment">(*&nbsp;<span class="inlinecode"><span class="id" title="var">EqmR_OK</span></span>&nbsp;:&nbsp;Well-formedness&nbsp;properties&nbsp;of&nbsp;EqmR.&nbsp;*)</span><br/>
+</div>
+
+<div class="doc">
+<a id="lab54"></a><h1 class="section"><span class="inlinecode"><a class="idref" href="ITree.EqmR.EqmRMonad.html#EqmR_OK"><span class="id" title="record">EqmR_OK</span></a></span> : Well-formedness properties of EqmR.</h1>
+
+</div>
+<div class="code">
 <span class="id" title="keyword">Section</span> <a id="EqmRRel" class="idref" href="#EqmRRel"><span class="id" title="section">EqmRRel</span></a>.<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Context</span> (<a id="m:7" class="idref" href="#m:7"><span class="id" title="binder">m</span></a> : <span class="id" title="keyword">Type</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.15.0/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Type</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Context</span> {<a id="EqMR:8" class="idref" href="#EqMR:8"><span class="id" title="binder">EqMR</span></a> : <a class="idref" href="ITree.EqmR.EqmRMonad.html#EqmR"><span class="id" title="class">EqmR</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#EqmRRel.m"><span class="id" title="variable">m</span></a>} {<a id="Mm:9" class="idref" href="#Mm:9"><span class="id" title="binder">Mm</span></a> : <span class="id" title="class">Monad</span> <a class="idref" href="ITree.EqmR.EqmRMonad.html#EqmRRel.m"><span class="id" title="variable">m</span></a>}.<br/>
@@ -374,30 +389,54 @@
 <span class="id" title="keyword">Arguments</span> <a class="idref" href="ITree.EqmR.EqmRMonad.html#Proper_eqmR_cong"><span class="id" title="instance">Proper_eqmR_cong</span></a> {<span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span>} [<span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span>].<br/>
 
 <br/>
+</div>
+
+<div class="doc">
+<a id="lab55"></a><h1 class="section">Image : the set of possible return values of a monad</h1>
+
+</div>
+<div class="code">
 <span class="id" title="keyword">Section</span> <a id="Image" class="idref" href="#Image"><span class="id" title="section">Image</span></a>.<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Context</span> (<a id="m:173" class="idref" href="#m:173"><span class="id" title="binder">m</span></a> : <span class="id" title="keyword">Type</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.15.0/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Type</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Context</span> {<a id="Mm:174" class="idref" href="#Mm:174"><span class="id" title="binder">Mm</span></a> : <span class="id" title="class">Monad</span> <a class="idref" href="ITree.EqmR.EqmRMonad.html#Image.m"><span class="id" title="variable">m</span></a>}.<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Context</span> {<a id="EqMR:175" class="idref" href="#EqMR:175"><span class="id" title="binder">EqMR</span></a> : <a class="idref" href="ITree.EqmR.EqmRMonad.html#EqmR"><span class="id" title="class">EqmR</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#Image.m"><span class="id" title="variable">m</span></a>} {<a id="EqmROKm:176" class="idref" href="#EqmROKm:176"><span class="id" title="binder">EqmROKm</span></a> : <a class="idref" href="ITree.EqmR.EqmRMonad.html#EqmR_OK"><span class="id" title="class">EqmR_OK</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#Image.m"><span class="id" title="variable">m</span></a>}.<br/>
 
 <br/>
-&nbsp;&nbsp;<span class="comment">(*<br/>
-&nbsp;&nbsp;&nbsp;*&nbsp;An&nbsp;_image_&nbsp;is&nbsp;a&nbsp;(unary)&nbsp;logical&nbsp;predicate&nbsp;that&nbsp;specifies&nbsp;the&nbsp;intersection<br/>
-&nbsp;&nbsp;&nbsp;*&nbsp;of&nbsp;PER's&nbsp;that&nbsp;a&nbsp;monadic&nbsp;value&nbsp;satisfies.&nbsp;Intuitively,&nbsp;what&nbsp;this&nbsp;entails&nbsp;is<br/>
-&nbsp;&nbsp;&nbsp;*&nbsp;the&nbsp;possible&nbsp;set&nbsp;of&nbsp;elements&nbsp;of&nbsp;the&nbsp;specified&nbsp;Type&nbsp;<span class="inlinecode"><span class="id" title="var">A</span></span>&nbsp;that&nbsp;a&nbsp;monadic<br/>
-&nbsp;&nbsp;&nbsp;*&nbsp;value&nbsp;can&nbsp;return.&nbsp;In&nbsp;this&nbsp;sense,&nbsp;it&nbsp;is&nbsp;an&nbsp;"image"&nbsp;as&nbsp;in&nbsp;set&nbsp;theory,<br/>
-&nbsp;&nbsp;&nbsp;*&nbsp;indicating&nbsp;the&nbsp;set&nbsp;of&nbsp;all&nbsp;output&nbsp;values&nbsp;that&nbsp;a&nbsp;monad&nbsp;may&nbsp;produce.<br/>
-&nbsp;&nbsp;&nbsp;*<br/>
-&nbsp;&nbsp;&nbsp;*&nbsp;Notice&nbsp;the&nbsp;definition&nbsp;of&nbsp;_image_&nbsp;takes&nbsp;the&nbsp;universal&nbsp;quantification&nbsp;over<br/>
-&nbsp;&nbsp;&nbsp;*&nbsp;all&nbsp;PER's&nbsp;satisfying&nbsp;<span class="inlinecode"><span class="id" title="var">EQ</span></span>,&nbsp;giving&nbsp;the&nbsp;smallest&nbsp;relation&nbsp;which&nbsp;will<br/>
-&nbsp;&nbsp;&nbsp;*&nbsp;describe&nbsp;the&nbsp;set&nbsp;of&nbsp;elements&nbsp;that&nbsp;a&nbsp;monadic&nbsp;value&nbsp;may&nbsp;return.<br/>
-&nbsp;&nbsp;&nbsp;*<br/>
-&nbsp;&nbsp;&nbsp;*&nbsp;Consider&nbsp;<span class="inlinecode"><span class="id" title="var">image</span></span> <span class="inlinecode"><span class="id" title="var">spin</span></span>&nbsp;in&nbsp;ITrees,&nbsp;or&nbsp;more&nbsp;simply,&nbsp;<span class="inlinecode"><span class="id" title="var">image</span></span> <span class="inlinecode"><span class="id" title="var">Nothing</span></span>&nbsp;for&nbsp;the<br/>
-&nbsp;&nbsp;&nbsp;*&nbsp;option&nbsp;monad,&nbsp;where&nbsp;the&nbsp;carrier&nbsp;Typee&nbsp;is&nbsp;<span class="inlinecode"><span class="id" title="var">A</span></span>.<br/>
-&nbsp;&nbsp;&nbsp;*<br/>
-&nbsp;&nbsp;&nbsp;*&nbsp;There&nbsp;exists&nbsp;no&nbsp;PER&nbsp;over&nbsp;any&nbsp;carrier&nbsp;Type&nbsp;that&nbsp;this&nbsp;option&nbsp;monad&nbsp;may&nbsp;have<br/>
-&nbsp;&nbsp;&nbsp;*&nbsp;in&nbsp;which&nbsp;<span class="inlinecode"><span class="id" title="var">Nothing</span></span>&nbsp;can&nbsp;give&nbsp;an&nbsp;image&nbsp;to,&nbsp;i.e.&nbsp;the&nbsp;smallest&nbsp;relation&nbsp;over<br/>
-&nbsp;&nbsp;&nbsp;*&nbsp;<span class="inlinecode"><span class="id" title="var">Nothing</span></span>&nbsp;cannot&nbsp;say&nbsp;anything&nbsp;about&nbsp;values&nbsp;of&nbsp;Type&nbsp;<span class="inlinecode"><span class="id" title="var">A</span></span>.<br/>
-&nbsp;&nbsp;&nbsp;*)</span><br/>
+</div>
+
+<div class="doc">
+<a id="lab56"></a><h1 class="section">An <i>image</i> is a (unary) logical predicate that specifies the intersection</h1>
+
+<a id="lab57"></a><h1 class="section">of PER's that a monadic value satisfies. Intuitively, what this entails is</h1>
+
+<a id="lab58"></a><h1 class="section">the possible set of elements of the specified Type <span class="inlinecode"><span class="id" title="var">A</span></span> that a monadic</h1>
+
+<a id="lab59"></a><h1 class="section">value can return. In this sense, it is an "image" as in set theory,</h1>
+
+<a id="lab60"></a><h1 class="section">indicating the set of all output values that a monad may produce.</h1>
+
+   *
+<a id="lab61"></a><h1 class="section">Notice the definition of <i>image</i> takes the universal quantification over</h1>
+
+<a id="lab62"></a><h1 class="section">all PER's satisfying <span class="inlinecode"><span class="id" title="var">EQ</span></span>, giving the smallest relation which will</h1>
+
+<a id="lab63"></a><h1 class="section">describe the set of elements that a monadic value may return.</h1>
+
+   *
+<a id="lab64"></a><h1 class="section">Consider <span class="inlinecode"><a class="idref" href="ITree.EqmR.EqmRMonadH.html#image"><span class="id" title="definition">image</span></a></span> <span class="inlinecode"><a class="idref" href="ITree.Core.ITreeDefinition.html#ITree.spin"><span class="id" title="definition">spin</span></a></span> in ITrees, or more simply, <span class="inlinecode"><a class="idref" href="ITree.EqmR.EqmRMonadH.html#image"><span class="id" title="definition">image</span></a></span> <span class="inlinecode"><span class="id" title="var">Nothing</span></span> for the</h1>
+
+<a id="lab65"></a><h1 class="section">option monad, where the carrier Typee is <span class="inlinecode"><span class="id" title="var">A</span></span>.</h1>
+
+   *
+<a id="lab66"></a><h1 class="section">There exists no PER over any carrier Type that this option monad may have</h1>
+
+<a id="lab67"></a><h1 class="section">in which <span class="inlinecode"><span class="id" title="var">Nothing</span></span> can give an image to, i.e. the smallest relation over</h1>
+
+<a id="lab68"></a><h1 class="section"><span class="inlinecode"><span class="id" title="var">Nothing</span></span> cannot say anything about values of Type <span class="inlinecode"><span class="id" title="var">A</span></span>.</h1>
+
+   
+</div>
+<div class="code">
 &nbsp;&nbsp;<span class="comment">(*&nbsp;Elements&nbsp;contained&nbsp;in&nbsp;the&nbsp;least&nbsp;specification&nbsp;that&nbsp;relates&nbsp;two&nbsp;monadic<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;computations.&nbsp;*)</span><br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="imageH" class="idref" href="#imageH"><span class="id" title="definition">imageH</span></a> {<a id="A1:177" class="idref" href="#A1:177"><span class="id" title="binder">A1</span></a> <a id="A2:178" class="idref" href="#A2:178"><span class="id" title="binder">A2</span></a> :<span class="id" title="keyword">Type</span>} (<a id="ma1:179" class="idref" href="#ma1:179"><span class="id" title="binder">ma1</span></a> : <a class="idref" href="ITree.EqmR.EqmRMonad.html#Image.m"><span class="id" title="variable">m</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#A1:177"><span class="id" title="variable">A1</span></a>) (<a id="ma2:180" class="idref" href="#ma2:180"><span class="id" title="binder">ma2</span></a> : <a class="idref" href="ITree.EqmR.EqmRMonad.html#Image.m"><span class="id" title="variable">m</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#A2:178"><span class="id" title="variable">A2</span></a>) : <a class="idref" href="ITree.Basics.HeterogeneousRelations.html#relationH"><span class="id" title="definition">relationH</span></a> (<a class="idref" href="ITree.EqmR.EqmRMonad.html#A1:177"><span class="id" title="variable">A1</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.15.0/stdlib//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">*</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#A2:178"><span class="id" title="variable">A2</span></a>) (<a class="idref" href="ITree.EqmR.EqmRMonad.html#A1:177"><span class="id" title="variable">A1</span></a> <a class="idref" href="http://coq.inria.fr/distrib/V8.15.0/stdlib//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac4"><span class="id" title="notation">*</span></a> <a class="idref" href="ITree.EqmR.EqmRMonad.html#A2:178"><span class="id" title="variable">A2</span></a>) :=<br/>

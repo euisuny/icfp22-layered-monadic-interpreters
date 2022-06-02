@@ -1,3 +1,6 @@
+(** * EqmR-related laws for the error monad. *)
+
+(* begin hide *)
 From Coq Require Import
      Logic.FunctionalExtensionality
      Morphisms
@@ -15,6 +18,7 @@ Import RelNotations.
 Local Open Scope cat_scope.
 Local Open Scope monad_scope.
 Local Open Scope relationH_scope.
+(* end hide *)
 
 Definition error (exn A : Type) : Type :=
   sum exn A.

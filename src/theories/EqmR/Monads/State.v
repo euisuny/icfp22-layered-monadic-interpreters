@@ -1,4 +1,4 @@
-(** *EqmR-related laws for the state monad. *)
+(** * EqmR-related laws for the state monad. *)
 
 (* begin hide *)
 From Coq Require Import

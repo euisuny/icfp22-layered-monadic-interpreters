@@ -1,3 +1,6 @@
+(** * EqmR-related laws for the error monad transformer. *)
+
+(* begin hide *)
 From Coq Require Import
      Logic.FunctionalExtensionality
      Morphisms
@@ -18,6 +21,7 @@ Import RelNotations.
 Local Open Scope cat_scope.
 Local Open Scope monad_scope.
 Local Open Scope relationH_scope.
+(* end hide *)
 
 Definition errorT (exn: Type) (m: Type -> Type) (A: Type) : Type :=
   m (sum exn A).

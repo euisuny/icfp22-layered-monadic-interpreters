@@ -28,43 +28,15 @@
 <h1 class="libtitle">ITree.EqmR.Monads.StateT</h1>
 
 <div class="code">
-<span class="id" title="keyword">From</span> <span class="id" title="var">Coq</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.15.0/stdlib//Coq.Logic.Classical_Prop.html#"><span class="id" title="library">Logic.Classical_Prop</span></a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.15.0/stdlib//Coq.Classes.Morphisms.html#"><span class="id" title="library">Morphisms</span></a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/distrib/V8.15.0/stdlib//Coq.Relations.Relations.html#"><span class="id" title="library">Relations</span></a>.<br/>
+</div>
+
+<div class="doc">
+<a id="lab129"></a><h1 class="section">EqmR-related laws for the state monad transformer.</h1>
+
+</div>
+<div class="code">
 
 <br/>
-<span class="id" title="keyword">From</span> <span class="id" title="var">ITree</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="ITree.Basics.Basics.html#"><span class="id" title="library">Basics.Basics</span></a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="ITree.Basics.Category.html#"><span class="id" title="library">Basics.Category</span></a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="ITree.Basics.CategoryKleisli.html#"><span class="id" title="library">Basics.CategoryKleisli</span></a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="ITree.Basics.CategoryKleisliFacts.html#"><span class="id" title="library">Basics.CategoryKleisliFacts</span></a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="ITree.Basics.HeterogeneousRelations.html#"><span class="id" title="library">Basics.HeterogeneousRelations</span></a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="ITree.Basics.Tacs.html#"><span class="id" title="library">Basics.Tacs</span></a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="ITree.Basics.Function.html#"><span class="id" title="library">Basics.Function</span></a>.<br/>
-
-<br/>
-<span class="id" title="keyword">From</span> <span class="id" title="var">ExtLib</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="library">Structures.Monad</span> <span class="id" title="library">Structures.Functor</span>.<br/>
-
-<br/>
-<span class="id" title="keyword">From</span> <span class="id" title="var">ITree.EqmR</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="ITree.EqmR.EqmRMonad.html#"><span class="id" title="library">EqmRMonad</span></a><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="ITree.EqmR.EqmRMonadT.html#"><span class="id" title="library">EqmRMonadT</span></a>.<br/>
-
-<br/>
-<span class="id" title="keyword">Import</span> <a class="idref" href="ITree.Basics.Basics.html#Monads"><span class="id" title="module">ITree.Basics.Basics.Monads</span></a>.<br/>
-<span class="id" title="keyword">Import</span> <span class="id" title="module">FunctorNotation</span>.<br/>
-<span class="id" title="keyword">Import</span> <a class="idref" href="ITree.Basics.CategoryOps.html#CatNotations"><span class="id" title="module">CatNotations</span></a>.<br/>
-<span class="id" title="keyword">Local Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">cat_scope</span>.<br/>
-<span class="id" title="keyword">Local Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">cat</span>.<br/>
-
-<br/>
-<span class="id" title="keyword">Import</span> <a class="idref" href="ITree.Basics.HeterogeneousRelations.html#RelNotations"><span class="id" title="module">RelNotations</span></a>.<br/>
-<span class="id" title="keyword">Local Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">relationH_scope</span>.<br/>
-
-<br/>
-<span class="id" title="keyword">Existing Class</span> <span class="id" title="var">inhabited</span>.<br/>
 
 <br/>
 <span class="id" title="keyword">Class</span> <a id="setoid" class="idref" href="#setoid"><span class="id" title="record">setoid</span></a> (<a id="S:1" class="idref" href="#S:1"><span class="id" title="binder">S</span></a> : <span class="id" title="keyword">Type</span>) := {<br/>

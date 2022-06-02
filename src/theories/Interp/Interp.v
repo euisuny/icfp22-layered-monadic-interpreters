@@ -82,8 +82,8 @@ Definition translate {E F} (h : E ~> F)
 
 Arguments translate {E F} h [T].
 
-(** *Interpret *)
-(* Interpretation schemes can be generalized as a function from a stack of monads
+(** * Interpret *)
+(** Interpretation schemes can be generalized as a function from a stack of monads
    [T] applied to a interpretable monad [IM] with an indexing [I] to a semantic
    domain [T M].
 
@@ -96,7 +96,7 @@ Arguments translate {E F} h [T].
 Class Interp (IM T: (Type -> Type) -> Type -> Type) (M : Type -> Type) :=
   interp : forall (I : Type -> Type) (h: I ~> M), T (IM I) ~> T M.
 
-(* Typically, an event handler [E ~> M] defines a monad morphism [itree E ~> M]
+(** Typically, an event handler [E ~> M] defines a monad morphism [itree E ~> M]
   for any monad [M] with a loop operator.
 
   This itree interpretation is an instance of the general interpretation scheme. *)
@@ -111,7 +111,7 @@ Definition interp_body {E M : Type -> Type}
     | VisF e k => bind (h _ e) (fun x => (ret (inl (k x))))
     end).
 
-(* ITrees are an interpretable monad. *)
+(** ITrees are an interpretable monad. *)
 #[global] Instance itree_interp {M : Type -> Type}
            {MM : Monad M} {MI : MonadIter M} :
   Interp itree (fun x => x) M := fun _ h R => iter (interp_body h _).

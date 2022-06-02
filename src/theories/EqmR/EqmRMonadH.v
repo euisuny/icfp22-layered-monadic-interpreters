@@ -1,5 +1,5 @@
 (** * Relations over different monads *)
-(* In many practical situations, such as when expressing the correctness of a
+(** In many practical situations, such as when expressing the correctness of a
   pass of compilation from distinct source and target languages, we need to state
   a relation over distinct monads.
 
@@ -39,7 +39,7 @@ Section EqmRH.
     eqmRH : forall {A B : Type} (R : relationH A B), relationH (m A) (m' B);
     }.
 
-  (* The more traditional notion of monadic equivalence is recovered at the
+  (** The more traditional notion of monadic equivalence is recovered at the
     equality relation [forall A,  m A -> m A -> Prop] *)
   Definition eqmH {m m': Type -> Type} `{@EqmRH m m'} {A: Type} := @eqmRH m m'.
 
@@ -74,7 +74,7 @@ Section EqmRRelH.
   Context {m_EqmR: EqmR m}.
   Context {m'_EqmR : EqmR m'}.
 
-  (* Requirements of well-formedness of [eqmRH] *)
+  (** Requirements of well-formedness of [eqmRH] *)
   Class EqmRH_OK : Type :=
     {
       eqmRH_transport_Zigzag :

@@ -1,3 +1,6 @@
+(** * EqmR-related laws for the state monad transformer. *)
+
+(* begin hide *)
 From Coq Require Import
      Logic.Classical_Prop
      Morphisms
@@ -29,6 +32,7 @@ Import RelNotations.
 Local Open Scope relationH_scope.
 
 Existing Class inhabited.
+(* end hide *)
 
 Class setoid (S : Type) := {
   EQS : relation S;

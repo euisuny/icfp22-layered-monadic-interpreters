@@ -189,41 +189,91 @@
 <li><a href="ITree.EqmR.EqmRMonad.html#lab53">EqmR Monad laws and associated typeclasses</a>
 
 </li>
+<li><a href="ITree.EqmR.EqmRMonad.html#lab54"><span class="inlinecode"><span class="id" title="var">EqmR_OK</span></span> : Well-formedness properties of EqmR.</a>
+
+</li>
+<li><a href="ITree.EqmR.EqmRMonad.html#lab55">Image : the set of possible return values of a monad</a>
+
+</li>
+<li><a href="ITree.EqmR.EqmRMonad.html#lab56">An <i>image</i> is a (unary) logical predicate that specifies the intersection</a>
+
+</li>
+<li><a href="ITree.EqmR.EqmRMonad.html#lab57">of PER's that a monadic value satisfies. Intuitively, what this entails is</a>
+
+</li>
+<li><a href="ITree.EqmR.EqmRMonad.html#lab58">the possible set of elements of the specified Type <span class="inlinecode"><span class="id" title="var">A</span></span> that a monadic</a>
+
+</li>
+<li><a href="ITree.EqmR.EqmRMonad.html#lab59">value can return. In this sense, it is an "image" as in set theory,</a>
+
+</li>
+<li><a href="ITree.EqmR.EqmRMonad.html#lab60">indicating the set of all output values that a monad may produce.</a>
+
+</li>
+<li><a href="ITree.EqmR.EqmRMonad.html#lab61">Notice the definition of <i>image</i> takes the universal quantification over</a>
+
+</li>
+<li><a href="ITree.EqmR.EqmRMonad.html#lab62">all PER's satisfying <span class="inlinecode"><span class="id" title="var">EQ</span></span>, giving the smallest relation which will</a>
+
+</li>
+<li><a href="ITree.EqmR.EqmRMonad.html#lab63">describe the set of elements that a monadic value may return.</a>
+
+</li>
+<li><a href="ITree.EqmR.EqmRMonad.html#lab64">Consider <span class="inlinecode"><span class="id" title="var">image</span></span> <span class="inlinecode"><span class="id" title="var">spin</span></span> in ITrees, or more simply, <span class="inlinecode"><span class="id" title="var">image</span></span> <span class="inlinecode"><span class="id" title="var">Nothing</span></span> for the</a>
+
+</li>
+<li><a href="ITree.EqmR.EqmRMonad.html#lab65">option monad, where the carrier Typee is <span class="inlinecode"><span class="id" title="var">A</span></span>.</a>
+
+</li>
+<li><a href="ITree.EqmR.EqmRMonad.html#lab66">There exists no PER over any carrier Type that this option monad may have</a>
+
+</li>
+<li><a href="ITree.EqmR.EqmRMonad.html#lab67">in which <span class="inlinecode"><span class="id" title="var">Nothing</span></span> can give an image to, i.e. the smallest relation over</a>
+
+</li>
+<li><a href="ITree.EqmR.EqmRMonad.html#lab68"><span class="inlinecode"><span class="id" title="var">Nothing</span></span> cannot say anything about values of Type <span class="inlinecode"><span class="id" title="var">A</span></span>.</a>
+
+</li>
 </ul>
 <h2><a href="ITree.Basics.CategoryKleisli.html">ITree.Basics.CategoryKleisli</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Basics.CategoryKleisli.html#lab54">Kleisli category</a>
+<li><a href="ITree.Basics.CategoryKleisli.html#lab69">Kleisli category</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Basics.CategoryKleisliFacts.html">ITree.Basics.CategoryKleisliFacts</a></h2>
 <h2><a href="ITree.EqmR.EqmRMonadH.html">ITree.EqmR.EqmRMonadH</a></h2>
 <ul class="doclist">
-<li><a href="ITree.EqmR.EqmRMonadH.html#lab58">Relations over different monads</a>
+<li><a href="ITree.EqmR.EqmRMonadH.html#lab73">Relations over different monads</a>
 
 </li>
 </ul>
 <h2><a href="ITree.EqmR.EqmRMonadT.html">ITree.EqmR.EqmRMonadT</a></h2>
+<ul class="doclist">
+<li><a href="ITree.EqmR.EqmRMonadT.html#lab74">Relational reasoning over monad transformers</a>
+
+</li>
+</ul>
 <h2><a href="ITree.Core.ITreeDefinition.html">ITree.Core.ITreeDefinition</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Core.ITreeDefinition.html#lab59">Interaction trees: core definitions</a>
+<li><a href="ITree.Core.ITreeDefinition.html#lab75">Interaction trees: core definitions</a>
 <ul class="doclist">
-<li><a href="ITree.Core.ITreeDefinition.html#lab60">The type of interaction trees</a>
+<li><a href="ITree.Core.ITreeDefinition.html#lab76">The type of interaction trees</a>
 
 </li>
-<li><a href="ITree.Core.ITreeDefinition.html#lab61">Main operations on <span class="inlinecode"><span class="id" title="var">itree</span></span></a>
+<li><a href="ITree.Core.ITreeDefinition.html#lab77">Main operations on <span class="inlinecode"><span class="id" title="var">itree</span></span></a>
 
 </li>
-<li><a href="ITree.Core.ITreeDefinition.html#lab64">Notations</a>
+<li><a href="ITree.Core.ITreeDefinition.html#lab80">Notations</a>
 
 </li>
-<li><a href="ITree.Core.ITreeDefinition.html#lab65">Instances</a>
+<li><a href="ITree.Core.ITreeDefinition.html#lab81">Instances</a>
 
 </li>
-<li><a href="ITree.Core.ITreeDefinition.html#lab66">Tactics</a>
+<li><a href="ITree.Core.ITreeDefinition.html#lab82">Tactics</a>
 
 </li>
-<li><a href="ITree.Core.ITreeDefinition.html#lab67">Compute with fuel</a>
+<li><a href="ITree.Core.ITreeDefinition.html#lab83">Compute with fuel</a>
 
 </li>
 </ul>
@@ -232,15 +282,15 @@
 </ul>
 <h2><a href="ITree.Eq.Shallow.html">ITree.Eq.Shallow</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Eq.Shallow.html#lab68">Shallow equivalence</a>
+<li><a href="ITree.Eq.Shallow.html#lab84">Shallow equivalence</a>
 <ul class="doclist">
-<li><a href="ITree.Eq.Shallow.html#lab69"><span class="inlinecode"><span class="id" title="var">observing</span></span>: Lift relations through <span class="inlinecode"><span class="id" title="var">observe</span></span>.</a>
+<li><a href="ITree.Eq.Shallow.html#lab85"><span class="inlinecode"><span class="id" title="var">observing</span></span>: Lift relations through <span class="inlinecode"><span class="id" title="var">observe</span></span>.</a>
 
 </li>
-<li><a href="ITree.Eq.Shallow.html#lab70">Unfolding lemmas for <span class="inlinecode"><span class="id" title="var">bind</span></span></a>
+<li><a href="ITree.Eq.Shallow.html#lab86">Unfolding lemmas for <span class="inlinecode"><span class="id" title="var">bind</span></span></a>
 
 </li>
-<li><a href="ITree.Eq.Shallow.html#lab71"><span class="inlinecode"><span class="id" title="var">going</span></span>: Lift relations through <span class="inlinecode"><span class="id" title="var">go</span></span>.</a>
+<li><a href="ITree.Eq.Shallow.html#lab87"><span class="inlinecode"><span class="id" title="var">going</span></span>: Lift relations through <span class="inlinecode"><span class="id" title="var">go</span></span>.</a>
 
 </li>
 </ul>
@@ -250,21 +300,21 @@
 <h2><a href="ITree.Eq.Paco2.html">ITree.Eq.Paco2</a></h2>
 <h2><a href="ITree.Eq.Eq.html">ITree.Eq.Eq</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Eq.Eq.html#lab72">Strong bisimulation</a>
+<li><a href="ITree.Eq.Eq.html#lab88">Strong bisimulation</a>
 <ul class="doclist">
-<li><a href="ITree.Eq.Eq.html#lab73">Coinductive reasoning with Paco</a>
+<li><a href="ITree.Eq.Eq.html#lab89">Coinductive reasoning with Paco</a>
 
 </li>
-<li><a href="ITree.Eq.Eq.html#lab75">Properties of relations</a>
+<li><a href="ITree.Eq.Eq.html#lab91">Properties of relations</a>
 
 </li>
-<li><a href="ITree.Eq.Eq.html#lab81">Eta-expansion</a>
+<li><a href="ITree.Eq.Eq.html#lab97">Eta-expansion</a>
 
 </li>
-<li><a href="ITree.Eq.Eq.html#lab84">Equations for core combinators</a>
+<li><a href="ITree.Eq.Eq.html#lab100">Equations for core combinators</a>
 
 </li>
-<li><a href="ITree.Eq.Eq.html#lab86">Tactics</a>
+<li><a href="ITree.Eq.Eq.html#lab102">Tactics</a>
 
 </li>
 </ul>
@@ -273,9 +323,9 @@
 </ul>
 <h2><a href="ITree.Eq.UpToTaus.html">ITree.Eq.UpToTaus</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Eq.UpToTaus.html#lab87">Equivalence up to taus</a>
+<li><a href="ITree.Eq.UpToTaus.html#lab103">Equivalence up to taus</a>
 <ul class="doclist">
-<li><a href="ITree.Eq.UpToTaus.html#lab88">gpaco</a>
+<li><a href="ITree.Eq.UpToTaus.html#lab104">gpaco</a>
 
 </li>
 </ul>
@@ -284,19 +334,19 @@
 </ul>
 <h2><a href="ITree.Eq.SimUpToTaus.html">ITree.Eq.SimUpToTaus</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Eq.SimUpToTaus.html#lab89">Simulation up to taus</a>
+<li><a href="ITree.Eq.SimUpToTaus.html#lab105">Simulation up to taus</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Eq.EqAxiom.html">ITree.Eq.EqAxiom</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Eq.EqAxiom.html#lab90">Strong bisimulation is propositional equality</a>
+<li><a href="ITree.Eq.EqAxiom.html#lab106">Strong bisimulation is propositional equality</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Eq.html">ITree.Eq</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Eq.html#lab91">Equivalences for interaction trees</a>
+<li><a href="ITree.Eq.html#lab107">Equivalences for interaction trees</a>
 
 </li>
 </ul>
@@ -304,9 +354,9 @@
 <h2><a href="ITree.EqmR.Monads.ITree_strong.html">ITree.EqmR.Monads.ITree_strong</a></h2>
 <h2><a href="ITree.Core.KTree.html">ITree.Core.KTree</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Core.KTree.html#lab92">The category of continuation trees (KTrees)</a>
+<li><a href="ITree.Core.KTree.html#lab108">The category of continuation trees (KTrees)</a>
 <ul class="doclist">
-<li><a href="ITree.Core.KTree.html#lab93">Categorical operations</a>
+<li><a href="ITree.Core.KTree.html#lab109">Categorical operations</a>
 
 </li>
 </ul>
@@ -315,12 +365,12 @@
 </ul>
 <h2><a href="ITree.Core.KTreeFacts.html">ITree.Core.KTreeFacts</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Core.KTreeFacts.html#lab95">Facts about <span class="inlinecode"><span class="id" title="var">aloop</span></span> and <span class="inlinecode"><span class="id" title="var">loop</span></span></a>
+<li><a href="ITree.Core.KTreeFacts.html#lab111">Facts about <span class="inlinecode"><span class="id" title="var">aloop</span></span> and <span class="inlinecode"><span class="id" title="var">loop</span></span></a>
 <ul class="doclist">
-<li><a href="ITree.Core.KTreeFacts.html#lab96"><span class="inlinecode"><span class="id" title="var">ITree.aloop</span></span></a>
+<li><a href="ITree.Core.KTreeFacts.html#lab112"><span class="inlinecode"><span class="id" title="var">ITree.aloop</span></span></a>
 
 </li>
-<li><a href="ITree.Core.KTreeFacts.html#lab97"><span class="inlinecode"><span class="id" title="var">iter</span></span></a>
+<li><a href="ITree.Core.KTreeFacts.html#lab113"><span class="inlinecode"><span class="id" title="var">iter</span></span></a>
 
 </li>
 </ul>
@@ -329,45 +379,45 @@
 </ul>
 <h2><a href="ITree.Indexed.Sum.html">ITree.Indexed.Sum</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Indexed.Sum.html#lab98">Sums of indexed types</a>
+<li><a href="ITree.Indexed.Sum.html#lab114">Sums of indexed types</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Indexed.Relation.html">ITree.Indexed.Relation</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Indexed.Relation.html#lab99">Relations on indexed types</a>
+<li><a href="ITree.Indexed.Relation.html#lab115">Relations on indexed types</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Indexed.Function.html">ITree.Indexed.Function</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Indexed.Function.html#lab100">The Category of Indexed Functions</a>
+<li><a href="ITree.Indexed.Function.html#lab116">The Category of Indexed Functions</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Indexed.FunctionFacts.html">ITree.Indexed.FunctionFacts</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Indexed.FunctionFacts.html#lab101">Theorems for <span class="inlinecode"><span class="id" title="var">ITree.Indexed.Function</span></span></a>
+<li><a href="ITree.Indexed.FunctionFacts.html#lab117">Theorems for <span class="inlinecode"><span class="id" title="var">ITree.Indexed.Function</span></span></a>
 
 </li>
 </ul>
 <h2><a href="ITree.Core.Subevent.html">ITree.Core.Subevent</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Core.Subevent.html#lab102">Extensible effects</a>
+<li><a href="ITree.Core.Subevent.html#lab118">Extensible effects</a>
 <ul class="doclist">
-<li><a href="ITree.Core.Subevent.html#lab103">Subevents</a>
+<li><a href="ITree.Core.Subevent.html#lab119">Subevents</a>
 
 </li>
-<li><a href="ITree.Core.Subevent.html#lab104">Triggerable Monads</a>
+<li><a href="ITree.Core.Subevent.html#lab120">Triggerable Monads</a>
 
 </li>
-<li><a href="ITree.Core.Subevent.html#lab106">Over: injection for handlers over sums of events</a>
+<li><a href="ITree.Core.Subevent.html#lab122">Over: injection for handlers over sums of events</a>
 
 </li>
-<li><a href="ITree.Core.Subevent.html#lab107">Instances for Automatic Injection</a>
+<li><a href="ITree.Core.Subevent.html#lab123">Instances for Automatic Injection</a>
 
 </li>
-<li><a href="ITree.Core.Subevent.html#lab110">Automatic solver for associating subevents</a>
+<li><a href="ITree.Core.Subevent.html#lab126">Automatic solver for associating subevents</a>
 
 </li>
 </ul>
@@ -375,14 +425,39 @@
 </li>
 </ul>
 <h2><a href="ITree.EqmR.Monads.ID.html">ITree.EqmR.Monads.ID</a></h2>
+<ul class="doclist">
+<li><a href="ITree.EqmR.Monads.ID.html#lab127">EqmR-related laws for the identity monad.</a>
+
+</li>
+</ul>
 <h2><a href="ITree.EqmR.Monads.State.html">ITree.EqmR.Monads.State</a></h2>
+<ul class="doclist">
+<li><a href="ITree.EqmR.Monads.State.html#lab128">EqmR-related laws for the state monad.</a>
+
+</li>
+</ul>
 <h2><a href="ITree.EqmR.Monads.StateT.html">ITree.EqmR.Monads.StateT</a></h2>
+<ul class="doclist">
+<li><a href="ITree.EqmR.Monads.StateT.html#lab129">EqmR-related laws for the state monad transformer.</a>
+
+</li>
+</ul>
 <h2><a href="ITree.EqmR.Monads.Error.html">ITree.EqmR.Monads.Error</a></h2>
+<ul class="doclist">
+<li><a href="ITree.EqmR.Monads.Error.html#lab130">EqmR-related laws for the error monad.</a>
+
+</li>
+</ul>
 <h2><a href="ITree.EqmR.Monads.ErrorT.html">ITree.EqmR.Monads.ErrorT</a></h2>
+<ul class="doclist">
+<li><a href="ITree.EqmR.Monads.ErrorT.html#lab131">EqmR-related laws for the error monad transformer.</a>
+
+</li>
+</ul>
 <h2><a href="ITree.EqmR.Monads.Prop.html">ITree.EqmR.Monads.Prop</a></h2>
 <ul class="doclist">
 <li><ul class="doclist">
-<li><a href="ITree.EqmR.Monads.Prop.html#lab111">Nondeterminism monad.</a>
+<li><a href="ITree.EqmR.Monads.Prop.html#lab132">Nondeterminism monad.</a>
 
 </li>
 </ul>
@@ -391,30 +466,30 @@
 </ul>
 <h2><a href="ITree.Basics.MonadState.html">ITree.Basics.MonadState</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Basics.MonadState.html#lab112">Iterative laws for state monad</a>
+<li><a href="ITree.Basics.MonadState.html#lab133">Iterative laws for state monad</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Basics.MonadFail.html">ITree.Basics.MonadFail</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Basics.MonadFail.html#lab113">Iterative laws for failure monad</a>
+<li><a href="ITree.Basics.MonadFail.html#lab134">Iterative laws for failure monad</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Interp.Recursion.html">ITree.Interp.Recursion</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Interp.Recursion.html#lab114">General recursion</a>
+<li><a href="ITree.Interp.Recursion.html#lab135">General recursion</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Interp.Handler.html">ITree.Interp.Handler</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Interp.Handler.html#lab117">Event handlers</a>
+<li><a href="ITree.Interp.Handler.html#lab138">Event handlers</a>
 <ul class="doclist">
-<li><a href="ITree.Interp.Handler.html#lab118">Handler combinators</a>
+<li><a href="ITree.Interp.Handler.html#lab139">Handler combinators</a>
 
 </li>
-<li><a href="ITree.Interp.Handler.html#lab119">Category instances</a>
+<li><a href="ITree.Interp.Handler.html#lab140">Category instances</a>
 
 </li>
 </ul>
@@ -423,35 +498,38 @@
 </ul>
 <h2><a href="ITree.Interp.Interp.html">ITree.Interp.Interp</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Interp.Interp.html#lab120">Interpretable Monads</a>
+<li><a href="ITree.Interp.Interp.html#lab141">Interpretable Monads</a>
 <ul class="doclist">
-<li><a href="ITree.Interp.Interp.html#lab121">Translate</a>
+<li><a href="ITree.Interp.Interp.html#lab142">Translate</a>
 
 </li>
 </ul>
+
+</li>
+<li><a href="ITree.Interp.Interp.html#lab143">Interpret</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Interp.TranslateFacts.html">ITree.Interp.TranslateFacts</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Interp.TranslateFacts.html#lab122">Theorems about <span class="inlinecode"><span class="id" title="var">Interp.translate</span></span></a>
+<li><a href="ITree.Interp.TranslateFacts.html#lab144">Theorems about <span class="inlinecode"><span class="id" title="var">Interp.translate</span></span></a>
 
 </li>
 </ul>
 <h2><a href="ITree.Interp.HFunctor.html">ITree.Interp.HFunctor</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Interp.HFunctor.html#lab123">Higher-order functors</a>
+<li><a href="ITree.Interp.HFunctor.html#lab145">Higher-order functors</a>
 <ul class="doclist">
-<li><a href="ITree.Interp.HFunctor.html#lab124">Higher-order functors</a>
+<li><a href="ITree.Interp.HFunctor.html#lab146">Higher-order functors</a>
 
 </li>
-<li><a href="ITree.Interp.HFunctor.html#lab125">Higher-order functor laws</a>
+<li><a href="ITree.Interp.HFunctor.html#lab147">Higher-order functor laws</a>
 
 </li>
-<li><a href="ITree.Interp.HFunctor.html#lab126">Higher-order functor laws for Iterative Monads</a>
+<li><a href="ITree.Interp.HFunctor.html#lab148">Higher-order functor laws for Iterative Monads</a>
 
 </li>
-<li><a href="ITree.Interp.HFunctor.html#lab128">Nesting HFunctors</a>
+<li><a href="ITree.Interp.HFunctor.html#lab150">Nesting HFunctors</a>
 
 </li>
 </ul>
@@ -460,39 +538,42 @@
 </ul>
 <h2><a href="ITree.Interp.InterpFacts.html">ITree.Interp.InterpFacts</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Interp.InterpFacts.html#lab129"><span class="inlinecode"><span class="id" title="var">interp</span></span> and constructors</a>
+<li><a href="ITree.Interp.InterpFacts.html#lab151">Reasoning principles for interpretable layered monads</a>
+
+</li>
+<li><a href="ITree.Interp.InterpFacts.html#lab152"><span class="inlinecode"><span class="id" title="var">interp</span></span> and constructors</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Interp.Traces.html">ITree.Interp.Traces</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Interp.Traces.html#lab130">ITrees as sets of traces</a>
+<li><a href="ITree.Interp.Traces.html#lab153">ITrees as sets of traces</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Events.State.html">ITree.Events.State</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Events.State.html#lab131">State</a>
+<li><a href="ITree.Events.State.html#lab154">State</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Events.Reader.html">ITree.Events.Reader</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Events.Reader.html#lab132">Reader</a>
+<li><a href="ITree.Events.Reader.html#lab155">Reader</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Events.Exception.html">ITree.Events.Exception</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Events.Exception.html#lab133">Exception event</a>
+<li><a href="ITree.Events.Exception.html#lab156">Exception event</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Events.Nondeterminism.html">ITree.Events.Nondeterminism</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Events.Nondeterminism.html#lab134">Nondeterminism</a>
+<li><a href="ITree.Events.Nondeterminism.html#lab157">Nondeterminism</a>
 <ul class="doclist">
-<li><a href="ITree.Events.Nondeterminism.html#lab135">Empty nondeterminism</a>
+<li><a href="ITree.Events.Nondeterminism.html#lab158">Empty nondeterminism</a>
 
 </li>
 </ul>
@@ -501,60 +582,60 @@
 </ul>
 <h2><a href="ITree.Events.Map.html">ITree.Events.Map</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Events.Map.html#lab136">Mutable map</a>
+<li><a href="ITree.Events.Map.html#lab159">Mutable map</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Events.MapDefault.html">ITree.Events.MapDefault</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Events.MapDefault.html#lab137">Mutable map whose lookup operation provides a default value.</a>
+<li><a href="ITree.Events.MapDefault.html#lab160">Mutable map whose lookup operation provides a default value.</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Events.MapDefaultFacts.html">ITree.Events.MapDefaultFacts</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Events.MapDefaultFacts.html#lab138">Mutable map whose lookup operation provides a default value.</a>
+<li><a href="ITree.Events.MapDefaultFacts.html#lab161">Mutable map whose lookup operation provides a default value.</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Events.Concurrency.html">ITree.Events.Concurrency</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Events.Concurrency.html#lab139">Concurrency</a>
+<li><a href="ITree.Events.Concurrency.html#lab162">Concurrency</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Events.Dependent.html">ITree.Events.Dependent</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Events.Dependent.html#lab140">Dependently-typed events</a>
+<li><a href="ITree.Events.Dependent.html#lab163">Dependently-typed events</a>
 
 </li>
 </ul>
 <h2><a href="ITree.Events.html">ITree.Events</a></h2>
 <ul class="doclist">
-<li><a href="ITree.Events.html#lab141">Standard event types</a>
+<li><a href="ITree.Events.html#lab164">Standard event types</a>
 <ul class="doclist">
-<li><a href="ITree.Events.html#lab142">State</a>
+<li><a href="ITree.Events.html#lab165">State</a>
 
 </li>
-<li><a href="ITree.Events.html#lab143">Reader</a>
+<li><a href="ITree.Events.html#lab166">Reader</a>
 
 </li>
-<li><a href="ITree.Events.html#lab144">Writer</a>
+<li><a href="ITree.Events.html#lab167">Writer</a>
 
 </li>
-<li><a href="ITree.Events.html#lab145">Exception</a>
+<li><a href="ITree.Events.html#lab168">Exception</a>
 
 </li>
-<li><a href="ITree.Events.html#lab146">Nondeterminism</a>
+<li><a href="ITree.Events.html#lab169">Nondeterminism</a>
 
 </li>
-<li><a href="ITree.Events.html#lab147">Map</a>
+<li><a href="ITree.Events.html#lab170">Map</a>
 
 </li>
-<li><a href="ITree.Events.html#lab148">Concurrency</a>
+<li><a href="ITree.Events.html#lab171">Concurrency</a>
 
 </li>
-<li><a href="ITree.Events.html#lab149">Dependent</a>
+<li><a href="ITree.Events.html#lab172">Dependent</a>
 
 </li>
 </ul>
@@ -563,13 +644,13 @@
 </ul>
 <h2><a href="ITree.ITree.html">ITree.ITree</a></h2>
 <ul class="doclist">
-<li><a href="ITree.ITree.html#lab150">Main module</a>
+<li><a href="ITree.ITree.html#lab173">Main module</a>
 
 </li>
 </ul>
 <h2><a href="ITree.ITreeFacts.html">ITree.ITreeFacts</a></h2>
 <ul class="doclist">
-<li><a href="ITree.ITreeFacts.html#lab151">Main module with theorems</a>
+<li><a href="ITree.ITreeFacts.html#lab174">Main module with theorems</a>
 
 </li>
 </ul>

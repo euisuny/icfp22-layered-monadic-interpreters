@@ -31,18 +31,19 @@
 </div>
 
 <div class="doc">
-<a id="lab58"></a><h1 class="section">Relations over different monads</h1>
+<a id="lab73"></a><h1 class="section">Relations over different monads</h1>
+ In many practical situations, such as when expressing the correctness of a
+  pass of compilation from distinct source and target languages, we need to state
+  a relation over distinct monads.
 
+<div class="paragraph"> </div>
+
+  We provide a more general notion of family of relations that are parameterized
+  by two monads, and lifts relations at return types. Each monad comes with its
+  own relational theory, and this "hetergeneous" <span class="inlinecode"><a class="idref" href="ITree.EqmR.EqmRMonad.html#eqmR"><span class="id" title="projection">eqmR</span></a></span> respects the relational
+  theory for each monad. 
 </div>
 <div class="code">
-<span class="comment">(*&nbsp;In&nbsp;many&nbsp;practical&nbsp;situations,&nbsp;such&nbsp;as&nbsp;when&nbsp;expressing&nbsp;the&nbsp;correctness&nbsp;of&nbsp;a<br/>
-&nbsp;&nbsp;pass&nbsp;of&nbsp;compilation&nbsp;from&nbsp;distinct&nbsp;source&nbsp;and&nbsp;target&nbsp;languages,&nbsp;we&nbsp;need&nbsp;to&nbsp;state<br/>
-&nbsp;&nbsp;a&nbsp;relation&nbsp;over&nbsp;distinct&nbsp;monads.<br/>
-<br/>
-&nbsp;&nbsp;We&nbsp;provide&nbsp;a&nbsp;more&nbsp;general&nbsp;notion&nbsp;of&nbsp;family&nbsp;of&nbsp;relations&nbsp;that&nbsp;are&nbsp;parameterized<br/>
-&nbsp;&nbsp;by&nbsp;two&nbsp;monads,&nbsp;and&nbsp;lifts&nbsp;relations&nbsp;at&nbsp;return&nbsp;types.&nbsp;Each&nbsp;monad&nbsp;comes&nbsp;with&nbsp;its<br/>
-&nbsp;&nbsp;own&nbsp;relational&nbsp;theory,&nbsp;and&nbsp;this&nbsp;"hetergeneous"&nbsp;<span class="inlinecode"><span class="id" title="var">eqmR</span></span>&nbsp;respects&nbsp;the&nbsp;relational<br/>
-&nbsp;&nbsp;theory&nbsp;for&nbsp;each&nbsp;monad.&nbsp;*)</span><br/>
 
 <br/>
 
@@ -56,8 +57,13 @@
 &nbsp;&nbsp;&nbsp;&nbsp;}.<br/>
 
 <br/>
-&nbsp;&nbsp;<span class="comment">(*&nbsp;The&nbsp;more&nbsp;traditional&nbsp;notion&nbsp;of&nbsp;monadic&nbsp;equivalence&nbsp;is&nbsp;recovered&nbsp;at&nbsp;the<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;equality&nbsp;relation&nbsp;<span class="inlinecode"><span class="id" title="keyword">forall</span></span> <span class="inlinecode"><span class="id" title="var">A</span>,</span>  <span class="inlinecode"><span class="id" title="var">m</span></span> <span class="inlinecode"><span class="id" title="var">A</span></span> <span class="inlinecode">-&gt;</span> <span class="inlinecode"><span class="id" title="var">m</span></span> <span class="inlinecode"><span class="id" title="var">A</span></span> <span class="inlinecode">-&gt;</span> <span class="inlinecode"><span class="id" title="keyword">Prop</span></span>&nbsp;*)</span><br/>
+</div>
+
+<div class="doc">
+The more traditional notion of monadic equivalence is recovered at the
+    equality relation <span class="inlinecode"><span class="id" title="keyword">forall</span></span> <span class="inlinecode"><span class="id" title="var">A</span>,</span>  <span class="inlinecode"><a class="idref" href="ITree.EqmR.Monads.ErrorT.html#Monad_Error.m"><span class="id" title="variable">m</span></a></span> <span class="inlinecode"><span class="id" title="var">A</span></span> <span class="inlinecode">-&gt;</span> <span class="inlinecode"><a class="idref" href="ITree.EqmR.Monads.ErrorT.html#Monad_Error.m"><span class="id" title="variable">m</span></a></span> <span class="inlinecode"><span class="id" title="var">A</span></span> <span class="inlinecode">-&gt;</span> <span class="inlinecode"><span class="id" title="keyword">Prop</span></span> 
+</div>
+<div class="code">
 &nbsp;&nbsp;<span class="id" title="keyword">Definition</span> <a id="eqmH" class="idref" href="#eqmH"><span class="id" title="definition">eqmH</span></a> {<a id="m:8" class="idref" href="#m:8"><span class="id" title="binder">m</span></a> <a id="m':9" class="idref" href="#m':9"><span class="id" title="binder">m'</span></a>: <span class="id" title="keyword">Type</span> <a class="idref" href="http://coq.inria.fr/distrib/V8.15.0/stdlib//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">-&gt;</span></a> <span class="id" title="keyword">Type</span>} `{<a id="H:10" class="idref" href="#H:10"><span class="id" title="binder">@</span></a><a id="H:10" class="idref" href="#H:10"><span class="id" title="binder">EqmRH</span></a> <a id="H:10" class="idref" href="#H:10"><span class="id" title="binder">m</span></a> <a id="H:10" class="idref" href="#H:10"><span class="id" title="binder">m'</span></a>} {<a id="A:11" class="idref" href="#A:11"><span class="id" title="binder">A</span></a>: <span class="id" title="keyword">Type</span>} := @<a class="idref" href="ITree.EqmR.EqmRMonadH.html#eqmRH"><span class="id" title="method">eqmRH</span></a> <a class="idref" href="ITree.EqmR.EqmRMonadH.html#m:8"><span class="id" title="variable">m</span></a> <a class="idref" href="ITree.EqmR.EqmRMonadH.html#m':9"><span class="id" title="variable">m'</span></a>.<br/>
 
 <br/>
@@ -100,7 +106,12 @@
 &nbsp;&nbsp;<span class="id" title="keyword">Context</span> {<a id="m'_EqmR:32" class="idref" href="#m'_EqmR:32"><span class="id" title="binder">m'_EqmR</span></a> : <a class="idref" href="ITree.EqmR.EqmRMonad.html#EqmR"><span class="id" title="class">EqmR</span></a> <a class="idref" href="ITree.EqmR.EqmRMonadH.html#EqmRRelH.m'"><span class="id" title="variable">m'</span></a>}.<br/>
 
 <br/>
-&nbsp;&nbsp;<span class="comment">(*&nbsp;Requirements&nbsp;of&nbsp;well-formedness&nbsp;of&nbsp;<span class="inlinecode"><span class="id" title="var">eqmRH</span></span>&nbsp;*)</span><br/>
+</div>
+
+<div class="doc">
+Requirements of well-formedness of <span class="inlinecode"><a class="idref" href="ITree.EqmR.EqmRMonadH.html#eqmRH"><span class="id" title="projection">eqmRH</span></a></span> 
+</div>
+<div class="code">
 &nbsp;&nbsp;<span class="id" title="keyword">Class</span> <a id="EqmRH_OK" class="idref" href="#EqmRH_OK"><span class="id" title="record">EqmRH_OK</span></a> : <span class="id" title="keyword">Type</span> :=<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;{<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a id="eqmRH_transport_Zigzag" class="idref" href="#eqmRH_transport_Zigzag"><span class="id" title="projection">eqmRH_transport_Zigzag</span></a> :<br/>

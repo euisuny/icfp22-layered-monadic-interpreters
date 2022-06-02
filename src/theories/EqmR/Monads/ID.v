@@ -1,4 +1,4 @@
-(** *EqmR-related laws for the identity monad. *)
+(** * EqmR-related laws for the identity monad. *)
 
 (* begin hide *)
 From Coq Require Import
