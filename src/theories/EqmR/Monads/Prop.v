@@ -1,4 +1,4 @@
-(** *EqmR-related laws for the prop monad. *)
+(** ** Nondeterminism monad. *)
 
 (* begin hide *)
 From Coq Require Import
@@ -7,7 +7,7 @@ From Coq Require Import
      Morphisms.
 
 From ExtLib Require Import
-     Structures.Monad Structures.MonadState.
+     Structures.Monad Structures.MonadState Structures.Functor.
 
 From ITree Require Import
      Basics.Basics
@@ -18,6 +18,13 @@ From ITree Require Import
      EqmR.EqmRMonad
      Basics.Tacs.
 
+From Coq Require Import
+     Logic.ClassicalDescription
+     Program
+     Setoid
+     Morphisms
+     RelationClasses
+     micromega.Lia.
 Import ITree.Basics.Basics.Monads.
 Import CatNotations.
 Local Open Scope cat_scope.
@@ -27,26 +34,6 @@ Import RelNotations.
 Local Open Scope relationH_scope.
 (* end hide *)
 
-(* Trying to define the EqmR version of PropM
-
-   Problems:
-   1. What does [eqmR R PA PB] mean?
-        "equal propositions, modulo R"
-
-    PA <= A
-
-    PB <= B
-
-    R <= (A * B)
-
-    PA * PB  <= R <= (A * B)
-
-   Questions:
-     -  must it be the case that [eq_rel (eqmR A A A) (m A)]  ?
-     -  or would only one inclusion suffice?  (m A) <2= (eqmR A A A)
-*)
-
-(* Nondeterminism monad. *)
 Definition PropM (X: Type) : Type := X -> Prop.
 
 Definition ret_ (A:Type) : A -> (PropM A) :=
@@ -97,14 +84,6 @@ Section PropM.
       (forall (a:A), ma a -> exists (b:B), R a b /\ mb b) /\
       (forall (b:B), mb b -> exists (a:A), R a b /\ ma a).
 
-  From Coq Require Import Logic.ClassicalDescription.
-
-From Coq Require Import
-     Program
-     Setoid
-     Morphisms
-     RelationClasses
-     micromega.Lia.
   (* Needs classical assumption *)
   Lemma eqmR_eqmR_'_logically_equivalent :
     forall A B (R : A -> B -> Prop) pa pb,
@@ -397,11 +376,6 @@ From Coq Require Import
     propM y0 b. eexists x1; eauto.
   Qed.
 
-  Instance EqmR_OKPropM_ : EqmR_OK PropM.
-  Proof.
-    constructor; try typeclasses eauto.
-  Qed.
-
   Lemma eqmR_ret_PropM : forall {A1 A2 : Type} (RA : relationH A1 A2) (a1:A1) (a2:A2),
           RA a1 a2 -> eqmR RA (ret a1) (ret a2 : PropM A2).
   Proof.
@@ -536,4 +510,4 @@ From Coq Require Import
   - repeat intro; apply bind_bind_PropM; eauto.
   Qed.
 
-ection PropM.
+End PropM.
