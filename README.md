@@ -3,7 +3,7 @@
 This is the artifact for the paper submission of "Formal Reasoning About Layered Monadic Interpreters".
 We have mechanized and proved all claims made in the paper in Coq.
 
-This development is also available via a virtual machine. (Downloadable in Zenodo)
+This development is also available via a virtual machine. (Downloadable in [Zenodo](https://zenodo.org/record/6604908#.YpgRtRPMKw0))
 
 ### Documentation
 
