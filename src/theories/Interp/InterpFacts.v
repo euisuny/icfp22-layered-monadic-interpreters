@@ -311,6 +311,24 @@ Section InterpITree.
     - setoid_rewrite unfold_interp. cbn. gstep; constructor; auto with paco.
   Qed.
 
+  Lemma itree_interp_iter_eutt' {E F} (f : E ~> itree F) {I A}
+        (t  : I -> itree E (I + A))
+        (t' : I -> itree F (I + A))
+        (EQ_t : forall i, eutt eq (interp f (t i)) (t' i))
+    : forall i,
+      interp f (ITree.iter t i)
+    ≈ ITree.iter t' i.
+  Proof.
+    ginit. pcofix CIH; intros i.
+    rewrite 2 unfold_iter.
+    rewrite itree_interp_bind.
+    guclo eqit_clo_bind; econstructor; eauto.
+    { apply EQ_t. }
+    intros [] _ []; cbn.
+    - rewrite itree_interp_tau; gstep; constructor; auto with paco.
+    - setoid_rewrite unfold_interp. cbn. gstep; constructor; auto with paco.
+  Qed.
+
   Lemma itree_interp_iter {E F} (f : E ~> itree F) {A B}
         (t : A -> itree E (A + B)) a0
     : interp f (iter (C := ktree E) t a0) ≅ iter (C := ktree F) (fun a => interp f (t a)) a0.
@@ -339,6 +357,34 @@ Section InterpITree.
         specialize (H E F f R _ eq r1 _ eq_refl).
         gfinal. right. cbn in H.
         eapply paco2_mon; eauto; intros; contradiction.
+  Qed.
+
+  #[global] Instance interp_laws_itree_interp {F}:
+    InterpLaws (fun x => x) (itree F) (TM_Interp := @itree_interp _ _ _).
+  Proof.
+    constructor; repeat intro.
+    - apply itree_morph_ret; auto.
+    - setoid_rewrite itree_interp_vis.
+      cbn. setoid_rewrite tau_eutt.
+      etransitivity.
+      eapply eutt_clo_bind. reflexivity.
+      intros; subst; apply itree_morph_ret; auto.
+      rewrite Eq.bind_ret_r; reflexivity.
+    - setoid_rewrite itree_interp_vis.
+      cbn. setoid_rewrite tau_eutt.
+      etransitivity.
+      eapply eutt_clo_bind. reflexivity.
+      intros; subst; apply itree_morph_ret; auto.
+      unfold over, cat, Cat_IFun, merge_E, case, split_E.
+      destruct S', S.
+      destruct S'_wf. red in iso_epi.
+      unfold over, cat, Cat_IFun in iso_epi.
+      unfold Subevent.merge_E, Subevent.split_E in iso_epi.
+      rewrite iso_epi. cbn.
+      rewrite Eq.bind_ret_r; reflexivity.
+    - setoid_rewrite itree_interp_bind; reflexivity.
+    - apply itree_interp_iter_eutt'; auto.
+    - eapply eutt_interp'; auto.
   Qed.
 
 End InterpITree.
@@ -637,3 +683,4 @@ Section Facts.
   Defined.
 
 End Facts.
+

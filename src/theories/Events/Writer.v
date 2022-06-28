@@ -48,7 +48,7 @@ Definition handle_writer_list {W E}
 
 Definition run_writer_list_state {W E F} `{writerE W +? E -< F}
   : itree F ~> stateT (list W) (itree E)
-  := interp_state (over handle_writer_list).
+  := interp (over handle_writer_list).
 
 Arguments run_writer_list_state {W E F _} [T].
 
@@ -74,7 +74,7 @@ Definition handle_writer {W E} (Monoid_W : Monoid W)
 Definition run_writer {W E F} (Monoid_W : Monoid W) `{writerE W +? E -< F}
   : itree F ~> writerT W (itree E)
   := fun _ t =>
-       interp_state (over (handle_writer Monoid_W)) t
+       interp (T := fun x => x) (over (handle_writer Monoid_W)) t
                     (monoid_unit Monoid_W).
 
 Arguments run_writer {W E _} Monoid_W {_} [T].
