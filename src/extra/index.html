@@ -181,7 +181,7 @@
                 <td class="tg-yw4l">Image of a Monadic Computation<br></td>
                 <td class="tg-yw4l"></td>
                 <td class="tg-yw4l"><a href="ITree.EqmR.EqmRMonad.html">EqmRMonad.v</a></td>
-                <td class="tg-rkwu">Definition image</td>
+                <td class="tg-rkwu">Definition mayRet</td>
             </tr>
             <tr>
                 <td class="tg-yw4l">Figure 8<br></td>
@@ -228,16 +228,16 @@
             <tr>
                 <td class="tg-yw4l">Section 4.1-4.3<br></td>
                 <td class="tg-yw4l">ITree Monad Instance for EqmR Laws (strong bisimulation)<br></td>
-                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l">Leaves</td>
                 <td class="tg-yw4l"><a href="ITree.EqmR.Monads.ITree_strong.html">ITree_strong.v</a></td>
-                <td class="tg-rkwu"></td>
+                <td class="tg-rkwu">Returns</td>
             </tr>
             <tr>
                 <td class="tg-yw4l">Section 4.1-4.3<br></td>
                 <td class="tg-yw4l">ITree Monad Instance for EqmR Laws (weak bisimulation)<br></td>
-                <td class="tg-yw4l"></td>
+                <td class="tg-yw4l">Leaves</td>
                 <td class="tg-yw4l"><a href="ITree.EqmR.Monads.ITree_weak.html">ITree_weak.v</a></td>
-                <td class="tg-rkwu"></td>
+                <td class="tg-rkwu">Returns</td>
             </tr>
             <tr>
                 <td class="tg-yw4l">Section 4.1-4.3<br></td>
@@ -254,7 +254,7 @@
                 <td class="tg-rkwu">Section MonadMorphism</td>
             </tr>
             <tr>
-                <td class="tg-yw4l">Figure 11<br></td>
+                <td class="tg-yw4l">Figure 11*<br></td>
                 <td class="tg-yw4l">Monad transformer well-formedness conditions<br></td>
                 <td class="tg-yw4l"></td>
                 <td class="tg-yw4l"><a href="ITree.EqmR.EqmRMonadT.html">EqmRMonadT.v</a></td>
@@ -320,6 +320,8 @@
                 <td class="tg-rkwu">compose_WF_HFunctor</td>
             </tr>
             </table>
+
+            * N.B. : The MonadMorphism laws is parameterized over a monad morphism from monad M to monad MT, while the MonadTLaws is parameterized over a monad transformer. Figure 11 is not explicitly stated as a typeclass but is proved for the state and error transformers (in stateT and errorT).
 
             <h3>Case Study</h3>
 
