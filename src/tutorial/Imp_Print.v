@@ -98,6 +98,8 @@ Inductive expr : Type :=
 (** The statements are straightforward. The [While] statement is the only
  potentially diverging one. *)
 
+(** Here, we add a [Print] statement to the language to see how to extend
+  the interpretation function. *)
 Inductive stmt : Type :=
 | Assign (x : var) (e : expr)    (* x = e *)
 | Seq    (a b : stmt)            (* a ; b *)
@@ -381,6 +383,12 @@ Definition evalPrint {E : Type -> Type} : PrintE ~> itree E :=
    _Imp_ env.
  *)
 
+(** Note that in order to define [interp_imp] over a program [(s : itree F A)]
+  where the event [F] is left abstract (with appropriate constraints for subevents),
+  it is necessary to specify the monad transformer [T] for all outer interpretation
+    functions and the underlying monad [M] for the innermost interpretation function.
+  (Otherwise, the typeclass inference may diverge since there are ambiguous ways to
+  compose monad transformers). *)
   Definition interp_imp {C D E F A}
              `{ImpState +? C -< D} `{ImpFail +? D -< E}
              `{PrintE +? E -< F}
