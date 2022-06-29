@@ -54,7 +54,6 @@ theories/Basics/MonadFail.v
 
 theories/Interp/Recursion.v
 theories/Interp/Handler.v
-#theories/Interp/HandlerFacts.v
 theories/Interp/Interp.v
 theories/Interp/TranslateFacts.v
 theories/Interp/HFunctor.v

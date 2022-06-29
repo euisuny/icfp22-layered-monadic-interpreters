@@ -1,6 +1,19 @@
-.PHONY: clean all coq test tests examples tutorial install uninstall depgraph for-dune
+.PHONY: clean all coq test tests examples tutorial install uninstall depgraph for-dune html
 
 COQPATHFILE=$(wildcard _CoqPath)
+
+EXTRA_DIR:=extra
+COQDOCFLAGS:= \
+  --external 'http://ssr2.msr-inria.inria.fr/doc/ssreflect-1.5/' Ssreflect \
+  --external 'http://ssr2.msr-inria.inria.fr/doc/mathcomp-1.5/' MathComp \
+  --toc --toc-depth 2 --html --interpolate \
+  --index indexpage --no-lib-name --parse-comments \
+  --with-header $(EXTRA_DIR)/header.html --with-footer $(EXTRA_DIR)/footer.html
+export COQDOCFLAGS
+COQMAKEFILE:=Makefile.coq
+COQ_PROJ:=_CoqProject
+VS:=$(wildcard *.v)
+VS_IN_PROJ:=$(shell grep .v $(COQ_PROJ))
 
 build: coq
 
@@ -59,43 +72,21 @@ depgraph:
 	sed 's%\("theories/\([^"]*\)/\([^"/]*\)"\[label="\)%\1\2/\\n%' -i $(DEPS_DOT)
 	dot $(DEPS_DOT) -Tjpg -o$(DEPS_OUT)
 
-# EXTRA_DIR:=extra
-# COQDOCFLAGS:= \
-#   --external 'http://ssr2.msr-inria.inria.fr/doc/ssreflect-1.5/' Ssreflect \
-#   --external 'http://ssr2.msr-inria.inria.fr/doc/mathcomp-1.5/' MathComp \
-#   --toc --toc-depth 2 --html --interpolate \
-#   --index indexpage --no-lib-name --parse-comments \
-#   --with-header $(EXTRA_DIR)/header.html --with-footer $(EXTRA_DIR)/footer.html
-# export COQDOCFLAGS
-# COQMAKEFILE:=Makefile.coq
-# COQ_PROJ:=_CoqProject
-# VS:=$(wildcard *.v)
-# VS_IN_PROJ:=$(shell grep .v $(COQ_PROJ))
+ifeq (,$(VS_IN_PROJ))
+VS_OTHER := $(VS)
+else
+VS := $(VS_IN_PROJ)
+endif
 
-# ifeq (,$(VS_IN_PROJ))
-# VS_OTHER := $(VS)
-# else
-# VS := $(VS_IN_PROJ)
-# endif
+html: $(COQMAKEFILE) $(VS)
+	rm -fr html
+	@$(MAKE) -f $(COQMAKEFILE) $@
+	cp $(EXTRA_DIR)/resources/* html
+	cp $(EXTRA_DIR)/index.html html
 
-# all:
-# 	html
+$(COQMAKEFILE): $(COQ_PROJ) $(VS)
+		coq_makefile -f $(COQ_PROJ) $(VS_OTHER) -o $@
 
-# clean: $(COQMAKEFILE)
-# 	@$(MAKE) -f $(COQMAKEFILE) $@
-# 	rm -f $(COQMAKEFILE)
-
-# html: $(COQMAKEFILE) $(VS)
-# 	rm -fr html
-# 	@$(MAKE) -f $(COQMAKEFILE) $@
-# 	cp $(EXTRA_DIR)/resources/* html
-# 	cp $(EXTRA_DIR)/index.html html
-
-# $(COQMAKEFILE): $(COQ_PROJ) $(VS)
-# 		coq_makefile -f $(COQ_PROJ) $(VS_OTHER) -o $@
-
-# %: $(COQMAKEFILE) force
-# 	@$(MAKE) -f $(COQMAKEFILE) $@
-# force $(COQ_PROJ) $(VS): ;
-
-# .PHONY: clean all force
+%: $(COQMAKEFILE) force
+	@$(MAKE) -f $(COQMAKEFILE) $@
+force $(COQ_PROJ) $(VS): ;
