@@ -910,12 +910,12 @@ Section Correctness.
       Proofmode.f_equiv.
       { unfold bisimilar.
         itrigger. iproper. eapply HProper0. eapply HTrigger. }
-      { do 3 ibind. }
+      { do 3 ibind. reflexivity. }
 
       Proofmode.f_equiv; [ done | ..].
-    { bind_cong; [ do 3 ibind | ..];
-        intros; subst; do 3 iret.
-        eapply Hret1. }
+    { bind_cong; [ do 3 ibind; reflexivity | ..];
+        intros; subst; do 4 iret. reflexivity.
+        }
       rewrite bind_bind.
 
       Proofmode.f_equiv; [ done | ..].
@@ -953,18 +953,18 @@ Section Correctness.
       (* We reduce both sides to Ret constructs *)
       unfold_interp.
 
-      Proofmode.f_equiv; [ do 2 iret | ..].
+      Proofmode.f_equiv; [ do 2 iret; reflexivity | ..].
       { iproper. eapply HProper1, HProper0, HProper.
         cbn. rewrite Eq.bind_bind Eq.bind_ret_l. reflexivity. }
 
-      Proofmode.f_equiv ; [ done | do 3 ibind | ].
+      Proofmode.f_equiv ; [ done | do 3 ibind ; reflexivity | ].
 
       Proofmode.f_equiv; [ done | .. ].
       { bind_cong.
         { iignoretrigger. iproper.
           eapply HProper1, HProper0; eapply HTrigger;
             try typeclasses eauto. }
-        intros; subst; do 3 iret; eapply Hret1. }
+        intros; subst; do 4 iret; reflexivity. }
 
       Proofmode.f_equiv; [ done | ..].
       bind_cong. unfold morph, lift.
@@ -983,13 +983,13 @@ Section Correctness.
     - (* Plus case *)
       (* We push [interp_locals] into the denotations *)
       unfold_interp.
-      Proofmode.f_equiv; [ do 2 ibind | ..].
+      Proofmode.f_equiv; [ do 2 ibind ; reflexivity| ..].
        { pose proof @denote_list_app. iproper.
          eapply HProper1, HProper0, HProper. erewrite H.
          bind_cong. reflexivity.
          intros; subst; setoid_rewrite denote_list_app at 1; apply reflexivity. }
 
-       Proofmode.f_equiv; [ done | do 3 ibind |..].
+       Proofmode.f_equiv; [ done | do 3 ibind ; reflexivity |..].
 
       unfold expr_bisim; intros.
       (* The Induction hypothesis on [e1] relates the first itrees *)
@@ -1002,6 +1002,7 @@ Section Correctness.
         ibind.
         iproper.
         specialize (HProper0 _ _ Hbind). repeat red in HProper0.
+
         (* FIXME : Get rid of [Proofmode] header *)
         Proofmode.f_equiv.
 
@@ -1068,13 +1069,13 @@ Section Correctness.
 
       (* We push [interp_locals] into the denotations *)
       unfold_interp.
-      Proofmode.f_equiv; [ do 2 ibind | ..].
+      Proofmode.f_equiv; [ do 2 ibind; reflexivity | ..].
        { pose proof @denote_list_app. iproper.
          eapply HProper1, HProper0, HProper. erewrite H.
          bind_cong. reflexivity.
          intros; subst; setoid_rewrite denote_list_app at 1; apply reflexivity. }
 
-       Proofmode.f_equiv; [ done | do 3 ibind |..].
+       Proofmode.f_equiv; [ done | do 3 ibind; reflexivity |..].
 
       unfold expr_bisim; intros.
       (* The Induction hypothesis on [e1] relates the first itrees *)
@@ -1153,13 +1154,13 @@ Section Correctness.
 
       (* We push [interp_locals] into the denotations *)
       unfold_interp.
-      Proofmode.f_equiv; [ do 2 ibind | ..].
+      Proofmode.f_equiv; [ do 2 ibind; reflexivity | ..].
        { pose proof @denote_list_app. iproper.
          eapply HProper1, HProper0, HProper. erewrite H.
          bind_cong. reflexivity.
          intros; subst; setoid_rewrite denote_list_app at 1; apply reflexivity. }
 
-       Proofmode.f_equiv; [ done | do 3 ibind |..].
+       Proofmode.f_equiv; [ done | do 3 ibind; reflexivity |..].
 
       unfold expr_bisim; intros.
       (* The Induction hypothesis on [e1] relates the first itrees *)

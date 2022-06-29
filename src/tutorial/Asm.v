@@ -408,7 +408,7 @@ Section InterpAsmProperties.
       interp_asm (ret r) ≋ ret r.
   Proof.
     intros; unfold interp_asm.
-    repeat iret.
+    do 3 iret. reflexivity.
   Qed.
 
   (** [interp_asm] commutes with [bind]. *)
@@ -417,7 +417,7 @@ Section InterpAsmProperties.
   Proof.
     intros; unfold interp_asm.
 
-    repeat ibind.
+    repeat ibind. reflexivity.
   Qed.
 
 End InterpAsmProperties.

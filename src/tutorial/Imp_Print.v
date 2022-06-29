@@ -61,6 +61,7 @@ From ITree Require Import
      Interp.HFunctor
      Interp.InterpFacts
      Events.MapDefault
+     Events.Writer
      EqmR.EqmRMonad EqmR.EqmRMonadT
      EqmR.Monads.ErrorT EqmR.Monads.StateT.
 
@@ -75,7 +76,6 @@ Local Open Scope cat_scope.
 Local Open Scope monad_scope.
 (* end hide *)
 
-(* TODO : Move *)
 Opaque eqmR. Opaque interp.
 
 (* ========================================================================== *)
@@ -105,6 +105,7 @@ Inductive stmt : Type :=
 | While  (t : expr) (b : stmt)   (* while (t) { b } *)
 | Skip                           (* ; *)
 | Abort
+| Print  (s : string)
 .
 
 (* ========================================================================== *)
@@ -150,6 +151,11 @@ Module ImpNotations.
        format
          "'[v  ' 'WHILE'  t  'DO' '/' '[v' b  ']' ']'").
 
+  Notation "'PRINT' s" :=
+      (Print s)
+        (at level 60,
+        right associativity): stmt_scope.
+
 End ImpNotations.
 
 Import ImpNotations.
@@ -177,6 +183,9 @@ Definition exn := unit.
 Variant ImpFail : Type -> Type :=
 | Fail : ImpFail void.
 
+Variant PrintE : Type -> Type :=
+  | Out (s : string) : PrintE unit.
+
 Section Denote.
 
   (** We now proceed to denote _Imp_ expressions and statements.
@@ -187,9 +196,10 @@ Section Denote.
       parameterize the denotation of _Imp_ by a larger universe of events [eff],
       of which [ImpState] is assumed to be a subevent. *)
 
-  Context {E1 E2 F : Type -> Type}.
+  Context {E1 E2 E3 F : Type -> Type}.
   Context {HasImpState : ImpState +? E1 -< F}.
   Context {HasFail : ImpFail +? E2 -< F}.
+  Context {HasPrint : PrintE +? E3 -< F}.
 
   (** _Imp_ expressions are denoted as [itree eff value], where the returned
       value in the tree is the value computed by the expression.
@@ -265,6 +275,7 @@ Section Denote.
 
     | Skip => ret tt
     | Abort => x <- trigger Fail;; match x:void with end
+    | Print s => trigger (Out s)
     end.
 
 End Denote.
@@ -285,6 +296,7 @@ Section Example_Fact.
   Definition fact (n:nat): stmt :=
     input ← n;;;
     output ← 1;;;
+    PRINT "";;;
     WHILE input
     DO output ← output * input;;;
        input  ← input - 1.
@@ -354,6 +366,11 @@ Definition ImpState_mapE : ImpState ~> mapE var 0 :=
 Definition handle_ImpState {E} : ImpState ~> stateT env (itree E) :=
     fun (T : Type) (X : ImpState T) => handle_map (ImpState_mapE T X).
 
+Definition evalPrint {E : Type -> Type} : PrintE ~> itree E :=
+  fun _ e =>
+    match e with
+    | Out s => ret tt
+    end.
 
 (** Finally, we can define an evaluator for our statements.
    To do so, we first denote them, leading to an [itree ImpState unit].
@@ -364,14 +381,18 @@ Definition handle_ImpState {E} : ImpState ~> stateT env (itree E) :=
    _Imp_ env.
  *)
 
-(* TODO : Remove [T] annotation ? *)
-  Definition interp_imp {C D E A}
-            `{ImpState +? C -< D} `{ImpFail +? D -< E}
-            (s:itree E A) : stateT env (failT (itree C)) A:=
-    interp (T := stateT env) (over handle_ImpFail) (interp (T := fun x => x) (over handle_ImpState) s).
+  Definition interp_imp {C D E F A}
+             `{ImpState +? C -< D} `{ImpFail +? D -< E}
+             `{PrintE +? E -< F}
+            (s:itree F A) : (stateT env (failT (itree C))) A:=
+    (interp (T := stateT env) (over handle_ImpFail)
+            (interp (T := fun x => x) (over handle_ImpState)
+                    (interp (M := itree E) (over evalPrint) s))).
 
   Definition eval_imp {E} (s: stmt) : stateT env (failT (itree E)) unit:=
-    interp (T := stateT env) (over handle_ImpFail) (interp (over handle_ImpState) (denote_imp s)).
+    interp (T := stateT env) (over handle_ImpFail)
+           (interp (over handle_ImpState)
+                   (interp (over evalPrint) (denote_imp s))).
 
 (** Equipped with this evaluator, we can now compute.
     Naturally since Coq is total, we cannot do it directly inside of it.
@@ -394,9 +415,10 @@ Section InterpImpProperties.
       at the _Asm_ level (see AsmOptimizations.v).
    *)
 
-  Context {E C1 C2: Type -> Type}.
+  Context {E C1 C2 C3: Type -> Type}.
   Context {HasState: ImpState +? C1 -< C2}.
-  Context {HasFail: ImpFail +? C2 -< E}.
+  Context {HasFail: ImpFail +? C2 -< C3}.
+  Context {HasPrint: PrintE +? C3 -< E}.
 
   Instance env_inhabited : inhabited env.
     constructor; exact nil.
@@ -407,6 +429,7 @@ Section InterpImpProperties.
     Proper (eqmR eq ==> eqmR eq) (interp_imp (A := A)).
   Proof.
     repeat intro; subst; unfold interp_imp.
+
     irewrite H.
   Qed.
 
@@ -417,7 +440,7 @@ Section InterpImpProperties.
   Proof.
     intros; unfold interp_imp.
 
-    ibind. ibind. reflexivity.
+    do 3 ibind. reflexivity.
   Qed.
 
 End InterpImpProperties.

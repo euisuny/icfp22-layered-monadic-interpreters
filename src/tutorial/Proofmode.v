@@ -47,11 +47,9 @@ Ltac iproper :=
   | |- context [interp (T := ?TR) ?h ?x] =>
       try iproper_rec x;
       iproper_body TR h x
-  end;
-  try match goal with
-    | |- _ ≈{_} interp (T :=  ?TR) ?h ?x =>
-      try iproper_rec x;
-      iproper_body TR h x
+  | |- _ ≈{_} interp (T :=  ?TR) ?h ?x =>
+    try iproper_rec x;
+    iproper_body TR h x
   end.
 
 Ltac itrigger :=
@@ -80,9 +78,9 @@ Ltac clear_ProperH :=
   end.
 
 Ltac irewrite H :=
+  iproper;
   match type of H with
   | interp ?f _ ≋ _ =>
-      iproper;
       match goal with
       | [HP : ProperH (eqmR eq ~~> eqmR eq) (interp ?f (T0 := _)) (interp ?f (T0 := _)) |- _] =>
           specialize (HP _ _ H);
@@ -90,9 +88,8 @@ Ltac irewrite H :=
           try irewrite HP; clear HP
       end
   | ?x ≋ ?y =>
-      repeat match goal with
+      match goal with
       | [ |- interp ?h ?x ≈{ ?RR } _ ] =>
-          iproper;
           match goal with
           | [ HProper :
               ProperH (eqmR eq ~~> eqmR eq)
@@ -116,14 +113,14 @@ Ltac iret :=
       | forall T : Type, ?E T -> _ T =>
           let Hret := fresh "Hret" in
           pose proof (interp_ret (T := TR) (E := E) h r) as Hret;
-          try (irewrite Hret)
+          try (rewrite Hret; clear Hret); try (irewrite Hret; clear Hret)
       end
   | |- context[interp (T := ?TR) ?h (Ret ?r)] =>
       match type of h with
       | forall T : Type, ?E T -> _ T =>
           let Hret := fresh "Hret" in
           pose proof (interp_ret (T := TR) (E := E) h r) as Hret;
-          try (irewrite Hret)
+          try (rewrite Hret; clear Hret); try (irewrite Hret; clear Hret)
       end
   end.
 
@@ -132,7 +129,7 @@ Ltac ibind_body TR h t k :=
   | forall T : Type, ?E T -> _ T =>
       let Hbind := fresh "Hbind" in
       pose proof (interp_bind (T := TR) (E := E) h k t) as Hbind;
-      try (irewrite Hbind)
+      try (rewrite Hbind; clear Hbind); try irewrite Hbind
   end.
 
 Ltac ibind_rec TR h x :=
