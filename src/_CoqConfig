@@ -63,6 +63,7 @@ theories/Interp/Traces.v
 
 theories/Events/State.v
 theories/Events/Reader.v
+theories/Events/Writer.v
 theories/Events/Exception.v
 theories/Events/Nondeterminism.v
 theories/Events/Map.v
